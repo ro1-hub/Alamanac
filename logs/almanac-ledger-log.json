@@ -1,0 +1,52 @@
+{
+  "exportedAt": "2026-08-10T14:34:52.996Z",
+  "leads": [],
+  "tasks": [
+    {
+      "stage": "First Sprout — Content",
+      "done": false,
+      "text": "Draft one content piece (e.g. spinal health handout)",
+      "id": "msnbq04nsdede"
+    },
+    {
+      "stage": "Taking Root — Website",
+      "done": false,
+      "text": "Write hero + about copy for a one-page site",
+      "id": "msnbq04ni5hnc"
+    },
+    {
+      "stage": "Full Bloom — Audio",
+      "done": false,
+      "text": "Script a 10-minute guided audio piece",
+      "id": "msnbq04nt0p24"
+    },
+    {
+      "stage": "Harvest & Share — Marketing",
+      "done": false,
+      "text": "Send one outreach message to your existing contacts",
+      "id": "msnbq04nwob3g"
+    },
+    {
+      "stage": "Tending the Plot — Workshops",
+      "done": false,
+      "text": "Plan a first free workshop",
+      "id": "msnbq04nqy28d"
+    },
+    {
+      "stage": "Reading the Season — Strategy",
+      "done": false,
+      "text": "Do a weekly check-in on what's working / stuck",
+      "id": "msnbq04nqad42"
+    }
+  ],
+  "revenue": [
+    {
+      "id": "msnbr7spxci96",
+      "client": "Remetski Kamenjak",
+      "amount": 250,
+      "date": "2026-08-10",
+      "note": "Šišanje +  odvoz"
+    }
+  ],
+  "expenses": []
+}
