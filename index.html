@@ -213,7 +213,13 @@
           <button onClick="{{ onAddEvent }}" style="width:100%;text-align:left;background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 14px;cursor:pointer;">Add event</button>
         </div>
 
-        <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">Upcoming</h3>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+          <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0;">Upcoming</h3>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{ onDownloadCalendarLog }}" style="font-family:'Archivo',monospace;font-size:10.5px;background:none;border:1px solid rgba(32,30,29,0.4);color:#201e1d;padding:5px 9px;cursor:pointer;">Export log ↓</button>
+            <button onClick="{{ onCalPush }}" style="font-family:'Archivo',monospace;font-size:10.5px;background:#ec3013;border:1px solid #ec3013;color:#f3f2f2;padding:5px 9px;cursor:pointer;">{{ calPushLabel }}</button>
+          </div>
+        </div>
         <sc-if value="{{ hasUpcoming }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ upcomingEvents }}" as="u" hint-placeholder-count="3">
             <div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
@@ -244,6 +250,7 @@
       <button onClick="{{ onTabLeads }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px 12px 0;margin-right:6px;color:{{ tabLeadsColor }};border-bottom:2px solid {{ tabLeadsBorder }};">People</button>
       <button onClick="{{ onTabTasks }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabTasksColor }};border-bottom:2px solid {{ tabTasksBorder }};">Tasks</button>
       <button onClick="{{ onTabRevenue }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabRevenueColor }};border-bottom:2px solid {{ tabRevenueBorder }};">Revenue</button>
+      <button onClick="{{ onTabExpenses }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabExpensesColor }};border-bottom:2px solid {{ tabExpensesBorder }};">Expenses</button>
     </div>
 
     <sc-if value="{{ isLeadsTab }}" hint-placeholder-val="{{ true }}">
@@ -354,7 +361,42 @@
       </sc-if>
     </sc-if>
 
-    <button onClick="{{ onResetAll }}" style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.4);background:none;border:none;cursor:pointer;text-decoration:underline;margin-top:32px;">Clear all saved data</button>
+    <sc-if value="{{ isExpensesTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+        <div style="background:#eae9e9;padding:22px;">
+          <h2 style="font-size:17px;margin:0 0 16px;">Log an expense</h2>
+          <div style="display:flex;gap:12px;margin-bottom:12px;">
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Amount (€)</label><input id="x-amount" type="number" step="0.01" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="30"></div>
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Date</label><input id="x-date" type="date" defaultValue="{{ todayForInput }}" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;"></div>
+          </div>
+          <div style="margin-bottom:16px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Note</label><input id="x-note" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. flyers, materials"></div>
+          <button onClick="{{ onAddExpense }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Add</button>
+        </div>
+        <div style="padding:22px 0;">
+          <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:6px;">Total logged</div>
+          <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:32px;">{{ totalExpensesLabel }}</div>
+        </div>
+      </div>
+      <sc-if value="{{ hasExpensesList }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ expensesList }}" as="x" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(32,30,29,0.25);">
+            <div>
+              <span style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);">{{ x.dateLabel }}{{ x.noteSuffix }}</span>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;">
+              <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;">{{ x.amountLabel }}</span>
+              <button onClick="{{ x.onRemove }}" style="background:none;border:none;cursor:pointer;color:rgba(32,30,29,0.4);">✕</button>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+    </sc-if>
+
+    <div style="display:flex;gap:16px;align-items:center;margin-top:32px;">
+      <button onClick="{{ onDownloadLedgerLog }}" style="font-family:'Archivo',monospace;font-size:11px;background:none;border:1px solid rgba(32,30,29,0.4);color:#201e1d;padding:6px 12px;cursor:pointer;">Export log ↓</button>
+      <button onClick="{{ onLedgerPush }}" style="font-family:'Archivo',monospace;font-size:11px;background:#ec3013;border:1px solid #ec3013;color:#f3f2f2;padding:6px 12px;cursor:pointer;">{{ ledgerPushLabel }}</button>
+      <button onClick="{{ onResetAll }}" style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.4);background:none;border:none;cursor:pointer;text-decoration:underline;">Clear all saved data</button>
+    </div>
   </section>
   </sc-if>
 
@@ -594,7 +636,8 @@ const MOTIVATION = [
 class Component extends DCLogic {
   state = {
     view:"home", ledgerTab:"leads", guideStage:0,
-    leads:[], tasks:[], events:[], revenue:[], habitLog:{},
+    leads:[], tasks:[], events:[], revenue:[], expenses:[], habitLog:{},
+    ghToken:null, ghBusy:null, ghStatus:{calendar:null, ledger:null},
     calYear:new Date().getFullYear(), calMonth:new Date().getMonth(),
     selectedDate:null, promptText:"", copyLabel:"Copy"
   };
@@ -602,21 +645,50 @@ class Component extends DCLogic {
   componentDidMount(){ this.loadAll(); }
 
   async loadAll(){
-    const [leadsR,tasksR,eventsR,revR,habR] = await Promise.all([
-      store.get("alm-leads"), store.get("alm-tasks"), store.get("alm-events"), store.get("alm-revenue"), store.get("alm-habits")
+    const [leadsR,tasksR,eventsR,revR,expR,habR,ghR] = await Promise.all([
+      store.get("alm-leads"), store.get("alm-tasks"), store.get("alm-events"), store.get("alm-revenue"), store.get("alm-expenses"), store.get("alm-habits"), store.get("alm-gh-token")
     ]);
     let leads=[]; try{ leads = leadsR ? JSON.parse(leadsR.value) : []; }catch(e){}
     let tasks=null; try{ tasks = tasksR ? JSON.parse(tasksR.value) : null; }catch(e){}
     if(!tasks){ tasks = DEFAULT_TASKS.map(t=>({...t,id:uid()})); this.saveTasks(tasks); }
     let events=[]; try{ events = eventsR ? JSON.parse(eventsR.value) : []; }catch(e){}
     let revenue=[]; try{ revenue = revR ? JSON.parse(revR.value) : []; }catch(e){}
+    let expenses=[]; try{ expenses = expR ? JSON.parse(expR.value) : []; }catch(e){}
     let habitLog={}; try{ habitLog = habR ? JSON.parse(habR.value) : {}; }catch(e){}
-    this.setState({leads,tasks,events,revenue,habitLog});
+    const ghToken = ghR ? ghR.value : null;
+    this.setState({leads,tasks,events,revenue,expenses,habitLog,ghToken});
+  }
+  connectGithub(){
+    const token = window.prompt("Paste a GitHub personal access token with 'repo' scope.\nStored only in your browser, never shown elsewhere.");
+    if(!token) return;
+    store.set("alm-gh-token", token).catch(()=>{});
+    this.setState({ghToken:token});
+  }
+  async pushToGithub(kind){
+    if(!this.state.ghToken){ this.connectGithub(); return; }
+    const s=this.state, token=this.state.ghToken, repo="ro1-hub/Alamanac";
+    let data,path,message;
+    if(kind==="calendar"){ data={exportedAt:new Date().toISOString(), events:s.events}; path="logs/almanac-calendar-log.json"; message="Update calendar log"; }
+    else { data={exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses}; path="logs/almanac-ledger-log.json"; message="Update ledger log"; }
+    const api=`https://api.github.com/repos/${repo}/contents/${path}`;
+    this.setState(prev=>({ghBusy:kind}));
+    try{
+      let sha;
+      const getRes = await fetch(api, {headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json"}});
+      if(getRes.ok){ sha=(await getRes.json()).sha; }
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+      const putRes = await fetch(api, { method:"PUT", headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json", "Content-Type":"application/json"}, body: JSON.stringify({message, content, sha, branch:"main"}) });
+      if(!putRes.ok){ throw new Error((await putRes.json()).message || putRes.statusText); }
+      this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:true, at:Date.now()}}}));
+    }catch(e){
+      this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:false, at:Date.now(), error:String(e.message||e)}}}));
+    }
   }
   saveLeads(leads){ store.set("alm-leads", JSON.stringify(leads)).catch(()=>{}); }
   saveTasks(tasks){ store.set("alm-tasks", JSON.stringify(tasks)).catch(()=>{}); }
   saveEvents(events){ store.set("alm-events", JSON.stringify(events)).catch(()=>{}); }
   saveRevenue(revenue){ store.set("alm-revenue", JSON.stringify(revenue)).catch(()=>{}); }
+  saveExpenses(expenses){ store.set("alm-expenses", JSON.stringify(expenses)).catch(()=>{}); }
   saveHabits(habitLog){ store.set("alm-habits", JSON.stringify(habitLog)).catch(()=>{}); }
 
   setView(v){ this.setState({view:v}); }
@@ -685,6 +757,15 @@ class Component extends DCLogic {
   }
   removeRevenue(id){ const revenue=this.state.revenue.filter(r=>r.id!==id); this.setState({revenue}); this.saveRevenue(revenue); }
 
+  addExpense(){
+    const amount=parseFloat(document.getElementById("x-amount").value); if(!amount) return;
+    const exp={ id:uid(), amount, date:document.getElementById("x-date").value||todayStr(),
+      note:document.getElementById("x-note").value.trim() };
+    const expenses=[...this.state.expenses, exp]; this.setState({expenses}); this.saveExpenses(expenses);
+    ["x-amount","x-note"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  }
+  removeExpense(id){ const expenses=this.state.expenses.filter(x=>x.id!==id); this.setState({expenses}); this.saveExpenses(expenses); }
+
   generatePrompt(){
     const stage=STAGES[this.state.guideStage];
     const values={};
@@ -696,6 +777,16 @@ class Component extends DCLogic {
     navigator.clipboard.writeText(this.state.promptText).then(()=>{
       this.setState({copyLabel:"Copied"}); setTimeout(()=>this.setState({copyLabel:"Copy"}),1400);
     }).catch(()=>{});
+  }
+  downloadLog(kind){
+    const s=this.state;
+    let data, filename;
+    if(kind==="calendar"){ data={ exportedAt:new Date().toISOString(), events:s.events }; filename="almanac-calendar-log.json"; }
+    else { data={ exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses }; filename="almanac-ledger-log.json"; }
+    const blob=new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
+    URL.revokeObjectURL(url);
   }
   downloadPrompt(){
     if(!this.state.promptText) return;
@@ -782,6 +873,9 @@ class Component extends DCLogic {
     const revenueList = s.revenue.map(r=>({ id:r.id, client:r.client, amountLabel:"€"+r.amount.toFixed(2), dateLabel:fmtDate(r.date),
       noteSuffix: r.note ? " · "+r.note : "", onRemove:()=>this.removeRevenue(r.id) }));
     const totalRevenue = s.revenue.reduce((a,r)=>a+r.amount,0);
+    const expensesList = s.expenses.map(x=>({ id:x.id, amountLabel:"€"+x.amount.toFixed(2), dateLabel:fmtDate(x.date),
+      noteSuffix: x.note ? " · "+x.note : "", onRemove:()=>this.removeExpense(x.id) }));
+    const totalExpenses = s.expenses.reduce((a,x)=>a+x.amount,0);
     const now=new Date();
     const months=[];
     for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(), now.getMonth()-i, 1); months.push({y:d.getFullYear(), m:d.getMonth(), label:d.toLocaleDateString("en-GB",{month:"short"})}); }
@@ -817,15 +911,26 @@ class Component extends DCLogic {
       selectedDayEvents, onClearSelectedDay:()=>this.setState({selectedDate:null}),
       onAddEvent:()=>this.addEvent(), eventTypes:EVENT_TYPES, todayForInput:today,
 
-      ledgerTab:s.ledgerTab, isLeadsTab:s.ledgerTab==="leads", isTasksTab:s.ledgerTab==="tasks", isRevenueTab:s.ledgerTab==="revenue",
-      onTabLeads:()=>this.setLedgerTab("leads"), onTabTasks:()=>this.setLedgerTab("tasks"), onTabRevenue:()=>this.setLedgerTab("revenue"),
+      ledgerTab:s.ledgerTab, isLeadsTab:s.ledgerTab==="leads", isTasksTab:s.ledgerTab==="tasks", isRevenueTab:s.ledgerTab==="revenue", isExpensesTab:s.ledgerTab==="expenses",
+      onTabLeads:()=>this.setLedgerTab("leads"), onTabTasks:()=>this.setLedgerTab("tasks"), onTabRevenue:()=>this.setLedgerTab("revenue"), onTabExpenses:()=>this.setLedgerTab("expenses"),
       tabLeadsColor: s.ledgerTab==="leads"?"#ec3013":"#201e1d", tabLeadsBorder: s.ledgerTab==="leads"?"#ec3013":"transparent",
       tabTasksColor: s.ledgerTab==="tasks"?"#ec3013":"#201e1d", tabTasksBorder: s.ledgerTab==="tasks"?"#ec3013":"transparent",
       tabRevenueColor: s.ledgerTab==="revenue"?"#ec3013":"#201e1d", tabRevenueBorder: s.ledgerTab==="revenue"?"#ec3013":"transparent",
+      tabExpensesColor: s.ledgerTab==="expenses"?"#ec3013":"#201e1d", tabExpensesBorder: s.ledgerTab==="expenses"?"#ec3013":"transparent",
       leadsList, hasLeadsList: leadsList.length>0, statuses:STATUSES, onAddLead:()=>this.addLead(),
       taskGroups, hasTaskGroups: taskGroups.length>0, ledgerStages:LEDGER_STAGES, onAddTask:()=>this.addTask(),
       revenueList, hasRevenueList: revenueList.length>0, onAddRevenue:()=>this.addRevenue(),
       totalRevenueLabel: "€"+totalRevenue.toFixed(2), monthlyBars, onResetAll:()=>this.resetAll(),
+      expensesList, hasExpensesList: expensesList.length>0, onAddExpense:()=>this.addExpense(),
+      totalExpensesLabel: "€"+totalExpenses.toFixed(2),
+      onDownloadCalendarLog:()=>this.downloadLog("calendar"), onDownloadLedgerLog:()=>this.downloadLog("ledger"),
+      ghConnected: !!s.ghToken, onConnectGithub:()=>this.connectGithub(),
+      onPushCalendarLog:()=>this.pushToGithub("calendar"), onPushLedgerLog:()=>this.pushToGithub("ledger"),
+      calPushBusy: s.ghBusy==="calendar", ledgerPushBusy: s.ghBusy==="ledger",
+      calPushLabel: s.ghBusy==="calendar" ? "Pushing…" : (s.ghStatus.calendar ? (s.ghStatus.calendar.ok?"Pushed ✓":"Failed") : (s.ghToken?"Push to GitHub":"Connect GitHub")),
+      ledgerPushLabel: s.ghBusy==="ledger" ? "Pushing…" : (s.ghStatus.ledger ? (s.ghStatus.ledger.ok?"Pushed ✓":"Failed") : (s.ghToken?"Push to GitHub":"Connect GitHub")),
+      onCalPush:()=> s.ghToken ? this.pushToGithub("calendar") : this.connectGithub(),
+      onLedgerPush:()=> s.ghToken ? this.pushToGithub("ledger") : this.connectGithub(),
 
       guideNav, stageNum:stage.num, stageLabel:stage.label, stageDesc:stage.desc, fields,
       onGenerate:()=>this.generatePrompt(), promptText:s.promptText, hasPrompt: !!s.promptText,
