@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T15:05:55.315Z",
+  "exportedAt": "2026-08-10T15:07:05.032Z",
   "leads": [],
   "tasks": [
     {
@@ -39,7 +39,22 @@
       "id": "msnczwvn489so"
     }
   ],
-  "revenue": [],
+  "revenue": [
+    {
+      "id": "msnd7izsoyytb",
+      "client": "Remetski kamenjak",
+      "amount": 250,
+      "date": "2026-08-10",
+      "note": "Šišanje živice"
+    },
+    {
+      "id": "msnd778rrpp7z",
+      "client": "Ratarska",
+      "amount": 300,
+      "date": "2026-08-10",
+      "note": ""
+    }
+  ],
   "expenses": [
     {
       "id": "msnd5877iehwr",
