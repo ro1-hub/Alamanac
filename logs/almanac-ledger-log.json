@@ -1,51 +1,44 @@
 {
-  "exportedAt": "2026-08-10T14:42:07.107Z",
+  "exportedAt": "2026-08-10T14:45:29.056Z",
   "leads": [],
   "tasks": [
     {
       "stage": "First Sprout — Content",
       "done": false,
       "text": "Draft one content piece (e.g. spinal health handout)",
-      "id": "msncava9pepvh"
+      "id": "msncfclpfn38h"
     },
     {
       "stage": "Taking Root — Website",
       "done": false,
       "text": "Write hero + about copy for a one-page site",
-      "id": "msncava9wrzv2"
+      "id": "msncfclppgdqc"
     },
     {
       "stage": "Full Bloom — Audio",
       "done": false,
       "text": "Script a 10-minute guided audio piece",
-      "id": "msncava90g0nn"
+      "id": "msncfclpald6e"
     },
     {
       "stage": "Harvest & Share — Marketing",
       "done": false,
       "text": "Send one outreach message to your existing contacts",
-      "id": "msncava9cfyzn"
+      "id": "msncfclpues7e"
     },
     {
       "stage": "Tending the Plot — Workshops",
       "done": false,
       "text": "Plan a first free workshop",
-      "id": "msncava9y4nta"
+      "id": "msncfclpa84z3"
     },
     {
       "stage": "Reading the Season — Strategy",
       "done": false,
       "text": "Do a weekly check-in on what's working / stuck",
-      "id": "msncava9boszl"
+      "id": "msncfclpc7ili"
     }
   ],
   "revenue": [],
-  "expenses": [
-    {
-      "id": "msncbewgq9mbf",
-      "amount": 30,
-      "date": "2026-08-10",
-      "note": "Damir"
-    }
-  ]
+  "expenses": []
 }
