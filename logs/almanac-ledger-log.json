@@ -1,52 +1,51 @@
 {
-  "exportedAt": "2026-08-10T14:40:35.404Z",
+  "exportedAt": "2026-08-10T14:42:07.107Z",
   "leads": [],
   "tasks": [
     {
       "stage": "First Sprout — Content",
       "done": false,
       "text": "Draft one content piece (e.g. spinal health handout)",
-      "id": "msnc7jq8p3ssy"
+      "id": "msncava9pepvh"
     },
     {
       "stage": "Taking Root — Website",
       "done": false,
       "text": "Write hero + about copy for a one-page site",
-      "id": "msnc7jq8tjr2z"
+      "id": "msncava9wrzv2"
     },
     {
       "stage": "Full Bloom — Audio",
       "done": false,
       "text": "Script a 10-minute guided audio piece",
-      "id": "msnc7jq8u79um"
+      "id": "msncava90g0nn"
     },
     {
       "stage": "Harvest & Share — Marketing",
       "done": false,
       "text": "Send one outreach message to your existing contacts",
-      "id": "msnc7jq8s6deu"
+      "id": "msncava9cfyzn"
     },
     {
       "stage": "Tending the Plot — Workshops",
       "done": false,
       "text": "Plan a first free workshop",
-      "id": "msnc7jq8db71m"
+      "id": "msncava9y4nta"
     },
     {
       "stage": "Reading the Season — Strategy",
       "done": false,
       "text": "Do a weekly check-in on what's working / stuck",
-      "id": "msnc7jq89dvhu"
+      "id": "msncava9boszl"
     }
   ],
-  "revenue": [
+  "revenue": [],
+  "expenses": [
     {
-      "id": "msnc84190l0q7",
-      "client": "Denis",
-      "amount": 100,
+      "id": "msncbewgq9mbf",
+      "amount": 30,
       "date": "2026-08-10",
-      "note": "Čišenje + odvoz"
+      "note": "Damir"
     }
-  ],
-  "expenses": []
+  ]
 }
