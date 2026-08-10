@@ -1,58 +1,51 @@
 {
-  "exportedAt": "2026-08-10T14:36:07.796Z",
+  "exportedAt": "2026-08-10T14:39:54.812Z",
   "leads": [],
   "tasks": [
     {
       "stage": "First Sprout — Content",
       "done": false,
       "text": "Draft one content piece (e.g. spinal health handout)",
-      "id": "msnbq04nsdede"
+      "id": "msnc7jq8p3ssy"
     },
     {
       "stage": "Taking Root — Website",
       "done": false,
       "text": "Write hero + about copy for a one-page site",
-      "id": "msnbq04ni5hnc"
+      "id": "msnc7jq8tjr2z"
     },
     {
       "stage": "Full Bloom — Audio",
       "done": false,
       "text": "Script a 10-minute guided audio piece",
-      "id": "msnbq04nt0p24"
+      "id": "msnc7jq8u79um"
     },
     {
       "stage": "Harvest & Share — Marketing",
       "done": false,
       "text": "Send one outreach message to your existing contacts",
-      "id": "msnbq04nwob3g"
+      "id": "msnc7jq8s6deu"
     },
     {
       "stage": "Tending the Plot — Workshops",
       "done": false,
       "text": "Plan a first free workshop",
-      "id": "msnbq04nqy28d"
+      "id": "msnc7jq8db71m"
     },
     {
       "stage": "Reading the Season — Strategy",
       "done": false,
       "text": "Do a weekly check-in on what's working / stuck",
-      "id": "msnbq04nqad42"
+      "id": "msnc7jq89dvhu"
     }
   ],
   "revenue": [
     {
-      "id": "msnc3pg8doorf",
-      "client": "Ratarska 38 i 40",
-      "amount": 300,
+      "id": "msnc84190l0q7",
+      "client": "Denis",
+      "amount": 100,
       "date": "2026-08-10",
-      "note": "košnja , gnojidba ,odvoz"
-    },
-    {
-      "id": "msnbr7spxci96",
-      "client": "Remetski Kamenjak",
-      "amount": 250,
-      "date": "2026-08-10",
-      "note": "Šišanje +  odvoz"
+      "note": "Čišenje + odvoz"
     }
   ],
   "expenses": []
