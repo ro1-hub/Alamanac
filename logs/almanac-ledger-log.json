@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T14:52:16.288Z",
+  "exportedAt": "2026-08-10T14:52:23.338Z",
   "leads": [],
   "tasks": [
     {
@@ -40,5 +40,12 @@
     }
   ],
   "revenue": [],
-  "expenses": []
+  "expenses": [
+    {
+      "id": "msncom9fuxpzz",
+      "amount": 100,
+      "date": "2026-08-10",
+      "note": "sergio"
+    }
+  ]
 }
