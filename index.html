@@ -664,21 +664,43 @@ class Component extends DCLogic {
     store.set("alm-gh-token", token).catch(()=>{});
     this.setState({ghToken:token});
   }
+  csvEscape(v){ v=String(v??""); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+  toCsv(rows, cols){
+    const esc=this.csvEscape.bind(this);
+    return [cols.map(esc).join(","), ...rows.map(r=>cols.map(c=>esc(r[c])).join(","))].join("\n");
+  }
+  async putFile(repo, token, path, contentStr, message){
+    const api=`https://api.github.com/repos/${repo}/contents/${path}`;
+    let sha;
+    const getRes = await fetch(api, {headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json"}});
+    if(getRes.ok){ sha=(await getRes.json()).sha; }
+    const content = btoa(unescape(encodeURIComponent(contentStr)));
+    const putRes = await fetch(api, { method:"PUT", headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json", "Content-Type":"application/json"}, body: JSON.stringify({message, content, sha, branch:"main"}) });
+    if(!putRes.ok){ throw new Error((await putRes.json()).message || putRes.statusText); }
+  }
   async pushToGithub(kind){
     if(!this.state.ghToken){ this.connectGithub(); return; }
     const s=this.state, token=this.state.ghToken, repo="ro1-hub/Alamanac";
-    let data,path,message;
-    if(kind==="calendar"){ data={exportedAt:new Date().toISOString(), events:s.events}; path="logs/almanac-calendar-log.json"; message="Update calendar log"; }
-    else { data={exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses}; path="logs/almanac-ledger-log.json"; message="Update ledger log"; }
-    const api=`https://api.github.com/repos/${repo}/contents/${path}`;
     this.setState(prev=>({ghBusy:kind}));
     try{
-      let sha;
-      const getRes = await fetch(api, {headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json"}});
-      if(getRes.ok){ sha=(await getRes.json()).sha; }
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-      const putRes = await fetch(api, { method:"PUT", headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json", "Content-Type":"application/json"}, body: JSON.stringify({message, content, sha, branch:"main"}) });
-      if(!putRes.ok){ throw new Error((await putRes.json()).message || putRes.statusText); }
+      if(kind==="calendar"){
+        const data={exportedAt:new Date().toISOString(), events:s.events};
+        const csv=this.toCsv(s.events.map(e=>({Date:e.date,Time:e.time,Title:e.title,Type:e.type,Person:e.person,Notes:e.notes})),
+          ["Date","Time","Title","Type","Person","Notes"]);
+        await this.putFile(repo, token, "logs/almanac-calendar-log.json", JSON.stringify(data,null,2), "Update calendar log");
+        await this.putFile(repo, token, "logs/almanac-calendar-log.csv", csv, "Update calendar log (table)");
+      } else {
+        const data={exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses};
+        const rows=[
+          ...s.leads.map(l=>({Type:"Lead",Date:l.date,Name:l.name,Status:l.status,Amount:"",Note:l.note})),
+          ...s.tasks.map(t=>({Type:"Task",Date:"",Name:t.text,Status:t.done?"Done":t.stage,Amount:"",Note:""})),
+          ...s.revenue.map(r=>({Type:"Revenue",Date:r.date,Name:r.client,Status:"",Amount:r.amount,Note:r.note})),
+          ...s.expenses.map(x=>({Type:"Expense",Date:x.date,Name:"",Status:"",Amount:x.amount,Note:x.note})),
+        ];
+        const csv=this.toCsv(rows, ["Type","Date","Name","Status","Amount","Note"]);
+        await this.putFile(repo, token, "logs/almanac-ledger-log.json", JSON.stringify(data,null,2), "Update ledger log");
+        await this.putFile(repo, token, "logs/almanac-ledger-log.csv", csv, "Update ledger log (table)");
+      }
       this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:true, at:Date.now()}}}));
     }catch(e){
       this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:false, at:Date.now(), error:String(e.message||e)}}}));
