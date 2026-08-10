@@ -691,15 +691,19 @@ class Component extends DCLogic {
         await this.putFile(repo, token, "logs/almanac-calendar-log.csv", csv, "Update calendar log (table)");
       } else {
         const data={exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses};
-        const rows=[
-          ...s.leads.map(l=>({Type:"Lead",Date:l.date,Name:l.name,Status:l.status,Amount:"",Note:l.note})),
-          ...s.tasks.map(t=>({Type:"Task",Date:"",Name:t.text,Status:t.done?"Done":t.stage,Amount:"",Note:""})),
-          ...s.revenue.map(r=>({Type:"Revenue",Date:r.date,Name:r.client,Status:"",Amount:r.amount,Note:r.note})),
-          ...s.expenses.map(x=>({Type:"Expense",Date:x.date,Name:"",Status:"",Amount:x.amount,Note:x.note})),
-        ];
-        const csv=this.toCsv(rows, ["Type","Date","Name","Status","Amount","Note"]);
         await this.putFile(repo, token, "logs/almanac-ledger-log.json", JSON.stringify(data,null,2), "Update ledger log");
-        await this.putFile(repo, token, "logs/almanac-ledger-log.csv", csv, "Update ledger log (table)");
+        const leadsCsv=this.toCsv(s.leads.map(l=>({Date:l.date,Name:l.name,Source:l.source,Contact:l.contact,Status:l.status,Note:l.note})),
+          ["Date","Name","Source","Contact","Status","Note"]);
+        await this.putFile(repo, token, "logs/almanac-leads-log.csv", leadsCsv, "Update leads log (table)");
+        const tasksCsv=this.toCsv(s.tasks.map(t=>({Stage:t.stage,Task:t.text,Done:t.done?"Yes":"No"})),
+          ["Stage","Task","Done"]);
+        await this.putFile(repo, token, "logs/almanac-tasks-log.csv", tasksCsv, "Update tasks log (table)");
+        const revenueCsv=this.toCsv(s.revenue.map(r=>({Date:r.date,Client:r.client,Amount:r.amount,Note:r.note})),
+          ["Date","Client","Amount","Note"]);
+        await this.putFile(repo, token, "logs/almanac-revenue-log.csv", revenueCsv, "Update revenue log (table)");
+        const expensesCsv=this.toCsv(s.expenses.map(x=>({Date:x.date,Amount:x.amount,Note:x.note})),
+          ["Date","Amount","Note"]);
+        await this.putFile(repo, token, "logs/almanac-expenses-log.csv", expensesCsv, "Update expenses log (table)");
       }
       this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:true, at:Date.now()}}}));
     }catch(e){
