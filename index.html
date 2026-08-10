@@ -510,8 +510,16 @@ function navStyle(active){ return active ? "color:#ec3013;border-bottom:2px soli
 
 const _mem = {};
 const store = {
-  async get(k){ if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.get(k); }catch(e){ return null; } } return (k in _mem)?{value:_mem[k]}:null; },
-  async set(k,v){ if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.set(k,v); }catch(e){ throw e; } } _mem[k]=v; return {value:v}; }
+  async get(k){
+    if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.get(k); }catch(e){ return null; } }
+    try{ if(typeof localStorage!=="undefined"){ const v=localStorage.getItem(k); return v!==null?{value:v}:null; } }catch(e){}
+    return (k in _mem)?{value:_mem[k]}:null;
+  },
+  async set(k,v){
+    if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.set(k,v); }catch(e){ throw e; } }
+    try{ if(typeof localStorage!=="undefined"){ localStorage.setItem(k,v); return {value:v}; } }catch(e){}
+    _mem[k]=v; return {value:v};
+  }
 };
 
 const STAGES = [
