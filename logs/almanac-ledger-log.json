@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T15:07:05.032Z",
+  "exportedAt": "2026-08-10T15:07:24.283Z",
   "leads": [],
   "tasks": [
     {
@@ -40,6 +40,13 @@
     }
   ],
   "revenue": [
+    {
+      "id": "msnd7y8elvb3d",
+      "client": "Denis",
+      "amount": 100,
+      "date": "2026-08-10",
+      "note": "Čišenje"
+    },
     {
       "id": "msnd7izsoyytb",
       "client": "Remetski kamenjak",
