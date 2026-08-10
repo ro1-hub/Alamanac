@@ -21,7 +21,20 @@
   *:focus-visible{outline:2px solid #ec3013;outline-offset:2px;}
 </style>
 </helmet>
-<div style="max-width:1120px;margin:0 auto;padding:32px 24px 96px;min-height:100vh;">
+<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfdcec"></stop>
+      <stop offset="100%" stop-color="#eef0e6"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="800" fill="url(#skyGrad)" opacity="0.55"></rect>
+  <polygon points="0,560 0,420 180,240 340,410 520,190 720,430 900,220 1080,410 1200,300 1200,560" fill="#8b98a3" opacity="0.5"></polygon>
+  <polygon points="0,620 0,500 220,360 460,520 680,340 940,520 1200,410 1200,620" fill="#a9835f" opacity="0.45"></polygon>
+  <polygon points="0,700 0,600 260,510 500,630 760,500 1020,630 1200,560 1200,700" fill="#6e8f52" opacity="0.4"></polygon>
+  <path d="M0,800 C160,700 220,660 340,700 C460,740 520,650 660,680 C800,710 880,640 1010,690 C1100,720 1150,700 1200,730 L1200,800 Z" fill="#5f9bb8" opacity="0.4"></path>
+</svg>
+<div style="max-width:1120px;margin:0 auto;padding:32px 24px 96px;min-height:100vh;position:relative;z-index:1;">
 
   <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid rgba(32,30,29,0.4);padding-bottom:16px;margin-bottom:32px;flex-wrap:wrap;gap:16px;">
     <div style="display:flex;align-items:baseline;gap:10px;">
@@ -667,8 +680,125 @@ const MOTIVATION = [
   "You're not starting from zero — you're organizing years of real experience into something people can find and pay for.",
   "Service and giving are the values you lead with. A sustainable price on that service isn't a betrayal of it — it's what lets you keep doing it.",
   "Croatia doesn't need another wellness brand. It needs the person who actually shows up — that's the whole edge.",
-  "Progress this week doesn't have to be visible to anyone but you. Keep tending the plot."
+  "Progress this week doesn't have to be visible to anyone but you. Keep tending the plot.",
+  "Clarity comes from action, not more thinking. Send the message you've been drafting.",
+  "The first client is the hardest one to get and the easiest one to keep — treat them like it.",
+  "You don't need permission to start charging for what you already know how to do.",
+  "A slow month is data, not a verdict. Adjust the offer, not your worth.",
+  "The plan will change the moment a real client talks to you. Let it.",
+  "Showing up consistently in a small pond beats disappearing into a big one.",
+  "Nobody is coming to build this for you — and that's exactly why it'll actually be yours.",
+  "The version of this that pays the bills is simpler than the one in your head.",
+  "One real testimonial is worth more than a week of polishing a logo.",
+  "You're allowed to charge more once you've helped one person get a real result.",
+  "Momentum is built in public — post the thing before it feels ready.",
+  "The community you're building starts with the one person you help well this week.",
+  "Rest is part of the plan, not a break from it — burnout won't get you to launch faster."
 ];
+const HISTORICAL_QUOTES = [
+  ["Simplicity is the ultimate sophistication.","Leonardo da Vinci"],
+  ["Learning never exhausts the mind.","Leonardo da Vinci"],
+  ["Art is never finished, only abandoned.","Leonardo da Vinci"],
+  ["The noblest pleasure is the joy of understanding.","Leonardo da Vinci"],
+  ["Time stays long enough for anyone who will use it.","Leonardo da Vinci"],
+  ["Where the spirit does not work with the hand, there is no art.","Leonardo da Vinci"],
+  ["Details make perfection, and perfection is not a detail.","Leonardo da Vinci"],
+  ["He who is fixed to a star does not change his mind.","Leonardo da Vinci"],
+  ["Water is the driving force of all nature.","Leonardo da Vinci"],
+  ["Knowing yourself is the beginning of all wisdom.","Aristotle"],
+  ["We are what we repeatedly do. Excellence, then, is not an act, but a habit.","Aristotle"],
+  ["It is during our darkest moments that we must focus to see the light.","Aristotle"],
+  ["Patience is bitter, but its fruit is sweet.","Aristotle"],
+  ["The whole is more than the sum of its parts.","Aristotle"],
+  ["You have power over your mind, not outside events. Realize this, and you will find strength.","Marcus Aurelius"],
+  ["Waste no more time arguing about what a good man should be. Be one.","Marcus Aurelius"],
+  ["The impediment to action advances action. What stands in the way becomes the way.","Marcus Aurelius"],
+  ["Very little is needed to make a happy life; it is all within yourself, in your way of thinking.","Marcus Aurelius"],
+  ["Luck is what happens when preparation meets opportunity.","Seneca"],
+  ["It is not that we have a short time to live, but that we waste a lot of it.","Seneca"],
+  ["Difficulties strengthen the mind, as labor does the body.","Seneca"],
+  ["He who is brave is free.","Seneca"],
+  ["The man who moves a mountain begins by carrying away small stones.","Confucius"],
+  ["It does not matter how slowly you go as long as you do not stop.","Confucius"],
+  ["Real knowledge is to know the extent of one's ignorance.","Confucius"],
+  ["Our greatest glory is not in never falling, but in rising every time we fall.","Confucius"],
+  ["The unexamined life is not worth living.","Socrates"],
+  ["Wisdom begins in wonder.","Socrates"],
+  ["I cannot teach anybody anything. I can only make them think.","Socrates"],
+  ["The beginning is the most important part of the work.","Plato"],
+  ["Courage is knowing what not to fear.","Plato"],
+  ["A journey of a thousand miles begins with a single step.","Lao Tzu"],
+  ["Nature does not hurry, yet everything is accomplished.","Lao Tzu"],
+  ["When I let go of what I am, I become what I might be.","Lao Tzu"],
+  ["In the midst of chaos, there is also opportunity.","Sun Tzu"],
+  ["Opportunities multiply as they are seized.","Sun Tzu"],
+  ["It's not what happens to you, but how you react to it that matters.","Epictetus"],
+  ["No man is free who is not master of himself.","Epictetus"],
+  ["Well done is better than well said.","Benjamin Franklin"],
+  ["Energy and persistence conquer all things.","Benjamin Franklin"],
+  ["By failing to prepare, you are preparing to fail.","Benjamin Franklin"],
+  ["Do not go where the path may lead, go instead where there is no path and leave a trail.","Ralph Waldo Emerson"],
+  ["What lies behind us and what lies before us are tiny matters compared to what lies within us.","Ralph Waldo Emerson"],
+  ["The world belongs to the energetic.","Ralph Waldo Emerson"],
+  ["Go confidently in the direction of your dreams. Live the life you have imagined.","Henry David Thoreau"],
+  ["It's not what you look at that matters, it's what you see.","Henry David Thoreau"],
+  ["The secret of getting ahead is getting started.","Mark Twain"],
+  ["Twenty years from now you will be more disappointed by the things you didn't do than by the ones you did.","Mark Twain"],
+  ["Continuous improvement is better than delayed perfection.","Mark Twain"],
+  ["In the middle of difficulty lies opportunity.","Albert Einstein"],
+  ["A person who never made a mistake never tried anything new.","Albert Einstein"],
+  ["Once we accept our limits, we go beyond them.","Albert Einstein"],
+  ["The present is theirs; the future, for which I really worked, is mine.","Nikola Tesla"],
+  ["My brain is only a receiver; in the universe there is a core from which we obtain knowledge.","Nikola Tesla"],
+  ["You cannot teach a man anything; you can only help him find it within himself.","Galileo Galilei"],
+  ["The greater danger for most of us lies not in setting our aim too high, but in setting it too low.","Michelangelo"],
+  ["I am still learning.","Michelangelo"],
+  ["The wound is the place where the light enters you.","Rumi"],
+  ["Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.","Rumi"],
+  ["Let yourself be silently drawn by the strange pull of what you really love.","Rumi"],
+  ["He who has a why to live can bear almost any how.","Friedrich Nietzsche"],
+  ["That which does not kill us makes us stronger.","Friedrich Nietzsche"],
+  ["Knowing is not enough; we must apply.","Johann Wolfgang von Goethe"],
+  ["Nothing is worth more than this day.","Johann Wolfgang von Goethe"],
+  ["Common sense is not so common.","Voltaire"],
+  ["Judge a man by his questions rather than his answers.","Voltaire"],
+  ["I think, therefore I am.","René Descartes"],
+  ["It is not the strongest of the species that survives, but the most adaptable.","Charles Darwin"],
+  ["If I have seen further, it is by standing on the shoulders of giants.","Isaac Newton"],
+  ["Tact is the art of making a point without making an enemy.","Isaac Newton"],
+  ["The heart has its reasons which reason knows nothing of.","Blaise Pascal"],
+  ["The greatest thing in the world is to know how to belong to oneself.","Michel de Montaigne"],
+  ["All things excellent are as difficult as they are rare.","Baruch Spinoza"],
+  ["We are not rich by what we possess but by what we can do without.","Immanuel Kant"],
+  ["While there's life, there's hope.","Cicero"],
+  ["A room without books is like a body without a soul.","Cicero"],
+  ["Know how to listen, and you will profit even from those who talk badly.","Plutarch"],
+  ["The only constant in life is change.","Heraclitus"],
+  ["No man ever steps in the same river twice.","Heraclitus"],
+  ["Dripping water hollows out stone, not through force but through persistence.","Ovid"],
+  ["Fortune favors the bold.","Virgil"],
+  ["The mind is everything. What you think you become.","Buddha"],
+  ["Peace comes from within. Do not seek it without.","Buddha"],
+  ["Better than a thousand hollow words is one word that brings peace.","Buddha"],
+  ["A person should not be too honest. Straight trees are cut first.","Chanakya"],
+  ["Teach thy tongue to say 'I do not know,' and thou shalt progress.","Maimonides"],
+  ["Walking is the best medicine.","Hippocrates"],
+  ["Life is short, the art long.","Hippocrates"],
+  ["Nothing in life is to be feared, it is only to be understood.","Marie Curie"],
+  ["Be less curious about people and more curious about ideas.","Marie Curie"],
+  ["I attribute my success to this: I never gave or took any excuse.","Florence Nightingale"],
+  ["Silence is better than unmeaning words.","Pythagoras"],
+  ["Well-being is realized by small steps, but is truly no small thing.","Zeno of Citium"],
+  ["To one who has faith, no explanation is necessary.","Thomas Aquinas"],
+  ["Prevention is better than cure.","Erasmus"],
+  ["Knowledge is power.","Francis Bacon"],
+  ["A wise man will make more opportunities than he finds.","Francis Bacon"],
+  ["Everyone sees what you appear to be, few experience what you really are.","Niccolò Machiavelli"],
+  ["He who wishes to be rich in a day will be hanged in a year.","Leonardo da Vinci"],
+  ["Study without desire spoils the memory, and it retains nothing that it takes in.","Leonardo da Vinci"],
+  ["Small rooms or dwellings discipline the mind, large ones weaken it.","Leonardo da Vinci"]
+].map(([text,author])=>({text,author}));
+const QUOTES = MOTIVATION.map(text=>({text,author:""})).concat(HISTORICAL_QUOTES);
 
 class Component extends DCLogic {
   state = {
@@ -1013,9 +1143,10 @@ class Component extends DCLogic {
     const fields = stage.fields.map(f=>({ id:f.id, label:f.label, isSelect:f.type==="select", isTextarea:f.type==="textarea",
       isText:f.type==="text", options: f.options||[], placeholder:f.placeholder||"", defaultValue:f.value||"" }));
 
-    const dayIndex = Math.floor(Date.now()/86400000);
-    const todaysNugget = DAILY_NUGGETS[dayIndex % DAILY_NUGGETS.length];
-    const todaysMotivation = MOTIVATION[(dayIndex+3) % MOTIVATION.length];
+    const halfDayIndex = Math.floor(Date.now()/(12*3600*1000));
+    const todaysNugget = DAILY_NUGGETS[halfDayIndex % DAILY_NUGGETS.length];
+    const q = QUOTES[(halfDayIndex+3) % QUOTES.length];
+    const todaysMotivation = q.text + (q.author ? " — "+q.author : "");
 
     return {
       view, isHome:view==="home", isCalendar:view==="calendar", isLedger:view==="ledger", isGuide:view==="guide", isCompass:view==="compass",
