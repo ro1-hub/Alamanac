@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Archivo',system-ui,sans-serif;background:#f3f2f2;color:#201e1d;}
+  input,select,textarea,button{font-family:inherit;}
+  a{color:#ec3013;text-underline-offset:3px;}
+  a:hover{color:#ae1800;}
+  ::selection{background:rgba(236,48,19,0.3);}
+  *:focus-visible{outline:2px solid #ec3013;outline-offset:2px;}
+</style>
+</helmet>
+<div style="max-width:1120px;margin:0 auto;padding:32px 24px 96px;min-height:100vh;">
+
+  <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid rgba(32,30,29,0.4);padding-bottom:16px;margin-bottom:32px;flex-wrap:wrap;gap:16px;">
+    <div style="display:flex;align-items:baseline;gap:10px;">
+      <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.01em;">The Almanac</span>
+      <span style="font-family:'Archivo',sans-serif;font-weight:400;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(32,30,29,0.55);">Robert · Croatia</span>
+    </div>
+    <nav style="display:flex;gap:26px;">
+      <button style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:8px 2px;{{ navHomeStyle }}" style-hover="color:#ec3013" onClick="{{ goHome }}">Home</button>
+      <button style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:8px 2px;{{ navCalStyle }}" style-hover="color:#ec3013" onClick="{{ goCal }}">Calendar</button>
+      <button style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:8px 2px;{{ navLedgerStyle }}" style-hover="color:#ec3013" onClick="{{ goLedger }}">Ledger</button>
+      <button style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:8px 2px;{{ navGuideStyle }}" style-hover="color:#ec3013" onClick="{{ goGuide }}">Field Guide</button>
+      <button style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:8px 2px;{{ navCompassStyle }}" style-hover="color:#ec3013" onClick="{{ goCompass }}">Compass</button>
+    </nav>
+  </div>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <section>
+    <header style="margin-bottom:32px;">
+      <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ae1800;margin-bottom:10px;">The almanac · home</div>
+      <h1 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.05;margin:0 0 8px;">{{ greet }}, Robert.</h1>
+      <p style="font-size:14px;color:rgba(32,30,29,0.65);margin:0;">{{ todayLabel }}</p>
+    </header>
+
+    <div style="background:#ec3013;color:#f3f2f2;padding:24px 28px;margin-bottom:32px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px;">
+        <span style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;">Today's push · {{ todaysNugget.tag }}</span>
+        <button onClick="{{ goCompass }}" style="background:none;border:1px solid #f3f2f2;color:#f3f2f2;font-family:'Archivo',monospace;font-size:10.5px;padding:5px 10px;cursor:pointer;">Full compass →</button>
+      </div>
+      <p style="font-family:'Archivo',sans-serif;font-weight:600;font-size:17px;line-height:1.4;margin:0 0 10px;">{{ todaysNugget.text }}</p>
+      <p style="font-size:13.5px;font-style:italic;opacity:0.9;margin:0;">{{ todaysMotivation }}</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:2px solid rgba(32,30,29,0.4);padding-bottom:32px;margin-bottom:32px;">
+      <div style="padding-right:32px;">
+        <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 18px;">Today's habits</h3>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <sc-for list="{{ habitRows }}" as="h" hint-placeholder-count="3">
+            <button onClick="{{ h.onToggle }}" style="display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:none;border:none;border-bottom:1px dashed rgba(32,30,29,0.2);cursor:pointer;padding:12px 0;">
+              <span style="display:flex;align-items:center;gap:12px;">
+                <span style="width:16px;height:16px;flex:none;border:1.5px solid #201e1d;background:{{ h.checked }};" data-checked="{{ h.checked }}"></span>
+                <span style="font-size:14.5px;font-weight:600;">{{ h.label }}</span>
+              </span>
+              <span style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);">{{ h.streak }} day streak</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding-left:32px;border-left:2px solid rgba(32,30,29,0.4);">
+        <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 18px;">This week</h3>
+        <p style="font-family:'Archivo',sans-serif;font-weight:800;font-size:17px;margin:0 0 4px;">{{ nextTaskHeadline }}</p>
+        <p style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);margin:0 0 16px;">{{ nextTaskStage }}</p>
+        <div style="display:flex;flex-direction:column;gap:0;margin-bottom:16px;">
+          <sc-for list="{{ weekItems }}" as="w" hint-placeholder-count="2">
+            <div style="padding:8px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+              <div style="font-size:13.5px;font-weight:600;">{{ w.label }}</div>
+              <div style="font-family:'Archivo',monospace;font-size:10.5px;color:rgba(32,30,29,0.55);">{{ w.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ followUps }}" hint-placeholder-val="{{ 0 }}">
+          <p style="font-size:13px;color:rgba(32,30,29,0.65);margin:0 0 12px;"><strong style="color:#ae1800;">{{ followUps }}</strong> people still to follow up with.</p>
+        </sc-if>
+        <button onClick="{{ goLedger }}" style="display:inline-flex;align-items:center;justify-content:flex-start;background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Open the Ledger</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:32px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px;">
+        <h2 style="font-size:22px;margin:0;">The season so far</h2>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg width="52" height="52" viewBox="0 0 60 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="26" fill="none" stroke="#d7d3d3" stroke-width="5"></circle>
+            <circle cx="30" cy="30" r="26" fill="none" stroke="#ec3013" stroke-width="5" stroke-dasharray="{{ ringC }}" stroke-dashoffset="{{ ringOffset }}" transform="rotate(-90 30 30)"></circle>
+          </svg>
+          <div>
+            <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;">{{ pct }}%</div>
+            <div style="font-family:'Archivo',monospace;font-size:10px;color:rgba(32,30,29,0.55);text-transform:uppercase;">{{ doneTasks }} of {{ totalTasks }} tasks</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <sc-for list="{{ stageNodes }}" as="n" hint-placeholder-count="6">
+          <button onClick="{{ n.onClick }}" style="display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:12px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
+              <span style="font-family:'Archivo',monospace;font-size:10.5px;color:rgba(32,30,29,0.6);">{{ n.num }} · {{ n.sub }}</span>
+              <span style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);">{{ n.count }}</span>
+            </div>
+            <div style="font-size:14.5px;margin-top:2px;color:{{ n.labelColor }};font-weight:{{ n.labelWeight }};display:flex;align-items:center;gap:8px;">
+              {{ n.label }}
+              <sc-if value="{{ n.here }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family:'Archivo',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#f3f2f2;background:#ec3013;padding:2px 6px;">you're here</span>
+              </sc-if>
+            </div>
+            <div style="height:3px;background:#d7d3d3;margin-top:8px;overflow:hidden;">
+              <div style="height:100%;background:#ec3013;width:{{ n.barPct }}%;"></div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:2px solid rgba(32,30,29,0.4);">
+      <button onClick="{{ goCal }}" style="text-align:left;background:none;border:none;cursor:pointer;padding:20px 20px 20px 0;">
+        <div style="font-family:'Archivo',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin-bottom:8px;">Tool</div>
+        <h3 style="font-size:17px;margin:0 0 6px;">Calendar</h3>
+        <p style="font-size:13px;color:rgba(32,30,29,0.65);margin:0;">Sessions, workshops and follow-ups on a month grid.</p>
+      </button>
+      <button onClick="{{ goLedger }}" style="text-align:left;background:none;border:none;cursor:pointer;padding:20px;border-left:2px solid rgba(32,30,29,0.4);">
+        <div style="font-family:'Archivo',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin-bottom:8px;">Tool</div>
+        <h3 style="font-size:17px;margin:0 0 6px;">Ledger</h3>
+        <p style="font-size:13px;color:rgba(32,30,29,0.65);margin:0;">People, tasks, and revenue across the six stages.</p>
+      </button>
+      <button onClick="{{ goGuide }}" style="text-align:left;background:none;border:none;cursor:pointer;padding:20px 0 20px 20px;border-left:2px solid rgba(32,30,29,0.4);">
+        <div style="font-family:'Archivo',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin-bottom:8px;">Tool</div>
+        <h3 style="font-size:17px;margin:0 0 6px;">Field Guide</h3>
+        <p style="font-size:13px;color:rgba(32,30,29,0.65);margin:0;">A ready-to-paste prompt for whatever you're building.</p>
+      </button>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+  <section>
+    <header style="margin-bottom:28px;">
+      <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ae1800;margin-bottom:10px;">Calendar</div>
+      <h1 style="font-size:clamp(26px,3.6vw,36px);margin:0 0 8px;">Sessions & workshops</h1>
+    </header>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <h2 style="font-size:19px;margin:0;">{{ calLabel }}</h2>
+          <div style="display:flex;gap:2px;">
+            <button onClick="{{ onPrevMonth }}" style="background:none;border:1px solid rgba(32,30,29,0.4);cursor:pointer;padding:6px 12px;font-weight:800;">←</button>
+            <button onClick="{{ onNextMonth }}" style="background:none;border:1px solid rgba(32,30,29,0.4);cursor:pointer;padding:6px 12px;font-weight:800;">→</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);border-top:2px solid rgba(32,30,29,0.4);border-left:1px solid rgba(32,30,29,0.25);">
+          <sc-for list="{{ weekdayLabels }}" as="wd" hint-placeholder-count="7">
+            <div style="font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.55);padding:6px 8px;border-right:1px solid rgba(32,30,29,0.25);border-bottom:1px solid rgba(32,30,29,0.25);">{{ wd }}</div>
+          </sc-for>
+          <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="42">
+            <button onClick="{{ c.onClick }}" style="text-align:left;min-height:64px;padding:6px 8px;background:{{ c.bg }};color:{{ c.color }};border:none;border-right:1px solid rgba(32,30,29,0.25);border-bottom:1px solid rgba(32,30,29,0.25);cursor:pointer;">
+              <div style="font-size:13px;font-weight:600;">{{ c.dayNum }}</div>
+              <sc-if value="{{ c.hasEvents }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;">
+                  <span style="width:6px;height:6px;background:#ec3013;display:inline-block;"></span>
+                  <span style="font-family:'Archivo',monospace;font-size:10px;color:#ae1800;">{{ c.dotCount }}</span>
+                </div>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ hasSelectedDay }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;border-top:2px solid rgba(32,30,29,0.4);padding-top:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h3 style="font-size:15px;margin:0;">{{ selectedDateLabel }}</h3>
+              <button onClick="{{ onClearSelectedDay }}" style="background:none;border:none;cursor:pointer;color:#ec3013;font-family:'Archivo',monospace;font-size:11px;">Clear</button>
+            </div>
+            <sc-for list="{{ selectedDayEvents }}" as="ev" hint-placeholder-count="1">
+              <div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+                <div>
+                  <div style="font-weight:600;font-size:14px;">{{ ev.title }}</div>
+                  <div style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);">{{ ev.type }} · {{ ev.time }} · {{ ev.person }}</div>
+                </div>
+                <button onClick="{{ ev.onDelete }}" style="background:none;border:1px solid #ae1800;color:#ae1800;cursor:pointer;padding:4px 8px;font-size:11px;">Remove</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+
+      <div>
+        <div style="background:#eae9e9;padding:20px;margin-bottom:20px;">
+          <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 14px;">Add to calendar</h3>
+          <div style="margin-bottom:12px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Title</label><input id="e-title" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. Session with Ana"></div>
+          <div style="margin-bottom:12px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Type</label>
+            <select id="e-type" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;">
+              <sc-for list="{{ eventTypes }}" as="t" hint-placeholder-count="4"><option value="{{ t }}">{{ t }}</option></sc-for>
+            </select>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:12px;">
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Date</label><input id="e-date" type="date" defaultValue="{{ todayForInput }}" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;"></div>
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Time</label><input id="e-time" type="time" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;"></div>
+          </div>
+          <div style="margin-bottom:12px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Person</label><input id="e-person" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="optional"></div>
+          <div style="margin-bottom:16px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Notes</label><textarea id="e-notes" style="width:100%;min-height:50px;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;resize:vertical;"></textarea></div>
+          <button onClick="{{ onAddEvent }}" style="width:100%;text-align:left;background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 14px;cursor:pointer;">Add event</button>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+          <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0;">Upcoming</h3>
+          <div style="display:flex;gap:8px;">
+            <button onClick="{{ onDownloadCalendarLog }}" style="font-family:'Archivo',monospace;font-size:10.5px;background:none;border:1px solid rgba(32,30,29,0.4);color:#201e1d;padding:5px 9px;cursor:pointer;">Export log ↓</button>
+            <button onClick="{{ onCalPush }}" style="font-family:'Archivo',monospace;font-size:10.5px;background:#ec3013;border:1px solid #ec3013;color:#f3f2f2;padding:5px 9px;cursor:pointer;">{{ calPushLabel }}</button>
+          </div>
+        </div>
+        <sc-if value="{{ hasUpcoming }}" hint-placeholder-val="{{ true }}">
+          <sc-for list="{{ upcomingEvents }}" as="u" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+              <div>
+                <div style="font-weight:600;font-size:13.5px;">{{ u.title }}</div>
+                <div style="font-family:'Archivo',monospace;font-size:10.5px;color:rgba(32,30,29,0.6);">{{ u.dateLabel }} · {{ u.type }}</div>
+              </div>
+              <button onClick="{{ u.onDelete }}" style="background:none;border:none;cursor:pointer;color:rgba(32,30,29,0.4);font-size:14px;">✕</button>
+            </div>
+          </sc-for>
+        </sc-if>
+        <sc-if value="{{ hasUpcoming }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:13px;color:rgba(32,30,29,0.5);font-style:italic;">Nothing scheduled yet.</p>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ isLedger }}" hint-placeholder-val="{{ false }}">
+  <section>
+    <header style="margin-bottom:24px;">
+      <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ae1800;margin-bottom:10px;">The grower's ledger</div>
+      <h1 style="font-size:clamp(26px,3.6vw,36px);margin:0 0 8px;">People, tasks & revenue</h1>
+    </header>
+
+    <div style="display:flex;gap:0;border-bottom:2px solid rgba(32,30,29,0.4);margin-bottom:26px;">
+      <button onClick="{{ onTabLeads }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px 12px 0;margin-right:6px;color:{{ tabLeadsColor }};border-bottom:2px solid {{ tabLeadsBorder }};">People</button>
+      <button onClick="{{ onTabTasks }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabTasksColor }};border-bottom:2px solid {{ tabTasksBorder }};">Tasks</button>
+      <button onClick="{{ onTabRevenue }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabRevenueColor }};border-bottom:2px solid {{ tabRevenueBorder }};">Revenue</button>
+      <button onClick="{{ onTabExpenses }}" style="background:none;border:none;cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:12px 20px;color:{{ tabExpensesColor }};border-bottom:2px solid {{ tabExpensesBorder }};">Expenses</button>
+    </div>
+
+    <sc-if value="{{ isLeadsTab }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#eae9e9;padding:22px;margin-bottom:22px;">
+        <h2 style="font-size:17px;margin:0 0 16px;">Log someone new</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+          <div style="flex:1;min-width:160px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Name</label><input id="l-name" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. Ana"></div>
+          <div style="flex:1;min-width:160px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Where you met</label><input id="l-source" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. farmers' market"></div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+          <div style="flex:1;min-width:160px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Contact</label><input id="l-contact" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="optional"></div>
+        </div>
+        <div style="margin-bottom:16px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Note</label><textarea id="l-note" style="width:100%;min-height:50px;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;resize:vertical;" placeholder="what they're looking for..."></textarea></div>
+        <button onClick="{{ onAddLead }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Add to ledger</button>
+      </div>
+      <sc-if value="{{ hasLeadsList }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ leadsList }}" as="l" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid rgba(32,30,29,0.25);">
+            <div style="flex:1;">
+              <div style="font-weight:800;font-size:15px;">{{ l.name }}</div>
+              <div style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);margin:2px 0 4px;">{{ l.meta }}</div>
+              <div style="font-size:13px;color:rgba(32,30,29,0.7);">{{ l.note }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:150px;">
+              <select onChange="{{ l.onStatusChange }}" defaultValue="{{ l.status }}" style="font-size:12px;padding:6px 8px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;">
+                <sc-for list="{{ statuses }}" as="st" hint-placeholder-count="4"><option value="{{ st }}">{{ st }}</option></sc-for>
+              </select>
+              <button onClick="{{ l.onRemove }}" style="background:none;border:1px solid #ae1800;color:#ae1800;cursor:pointer;padding:5px 10px;font-size:11px;">Remove</button>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{ hasLeadsList }}" hint-placeholder-val="{{ false }}">
+        <p style="color:rgba(32,30,29,0.5);font-style:italic;font-size:13.5px;">No one logged yet — add the first person above.</p>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ isTasksTab }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#eae9e9;padding:22px;margin-bottom:22px;">
+        <h2 style="font-size:17px;margin:0 0 16px;">Add a task</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+          <div style="flex:2;min-width:200px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Task</label><input id="t-text" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="what needs doing"></div>
+          <div style="flex:1;min-width:180px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Stage</label>
+            <select id="t-stage" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;">
+              <sc-for list="{{ ledgerStages }}" as="ls" hint-placeholder-count="6"><option value="{{ ls }}">{{ ls }}</option></sc-for>
+            </select>
+          </div>
+        </div>
+        <button onClick="{{ onAddTask }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Add task</button>
+      </div>
+      <sc-if value="{{ hasTaskGroups }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ taskGroups }}" as="g" hint-placeholder-count="6">
+          <div style="margin-bottom:22px;">
+            <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#ec3013;margin-bottom:10px;">{{ g.stage }}</div>
+            <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="2">
+              <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+                <input type="checkbox" checked="{{ t.done }}" onChange="{{ t.onToggle }}" style="width:auto;margin-top:3px;accent-color:#ec3013;">
+                <div style="flex:1;font-size:14px;text-decoration:{{ t.strike }};color:{{ t.textColor }};">{{ t.text }}</div>
+                <button onClick="{{ t.onRemove }}" style="background:none;border:none;cursor:pointer;color:rgba(32,30,29,0.4);">✕</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ isRevenueTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+        <div style="background:#eae9e9;padding:22px;">
+          <h2 style="font-size:17px;margin:0 0 16px;">Log a fee</h2>
+          <div style="display:flex;gap:12px;margin-bottom:12px;">
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Client</label><input id="r-client" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. Ana"></div>
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Amount (€)</label><input id="r-amount" type="number" step="0.01" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="30"></div>
+          </div>
+          <div style="margin-bottom:12px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Date</label><input id="r-date" type="date" defaultValue="{{ todayForInput }}" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;"></div>
+          <div style="margin-bottom:16px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Note</label><input id="r-note" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="optional"></div>
+          <button onClick="{{ onAddRevenue }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Add</button>
+        </div>
+        <div style="padding:22px 0;">
+          <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:6px;">Total logged</div>
+          <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:32px;margin-bottom:20px;">{{ totalRevenueLabel }}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{ monthlyBars }}" as="b" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-family:'Archivo',monospace;font-size:10.5px;width:32px;color:rgba(32,30,29,0.6);">{{ b.label }}</span>
+                <div style="flex:1;height:14px;background:#d7d3d3;position:relative;">
+                  <div style="height:100%;background:#ec3013;width:{{ b.pct }}%;"></div>
+                </div>
+                <span style="font-family:'Archivo',monospace;font-size:10.5px;width:46px;text-align:right;">{{ b.amountLabel }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ hasRevenueList }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ revenueList }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(32,30,29,0.25);">
+            <div>
+              <span style="font-weight:600;font-size:14px;">{{ r.client }}</span>
+              <span style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);"> · {{ r.dateLabel }}{{ r.noteSuffix }}</span>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;">
+              <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;">{{ r.amountLabel }}</span>
+              <button onClick="{{ r.onRemove }}" style="background:none;border:none;cursor:pointer;color:rgba(32,30,29,0.4);">✕</button>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ isExpensesTab }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
+        <div style="background:#eae9e9;padding:22px;">
+          <h2 style="font-size:17px;margin:0 0 16px;">Log an expense</h2>
+          <div style="display:flex;gap:12px;margin-bottom:12px;">
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Amount (€)</label><input id="x-amount" type="number" step="0.01" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="30"></div>
+            <div style="flex:1;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Date</label><input id="x-date" type="date" defaultValue="{{ todayForInput }}" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;"></div>
+          </div>
+          <div style="margin-bottom:16px;"><label style="display:block;font-family:'Archivo',monospace;font-size:10px;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:5px;">Note</label><input id="x-note" style="width:100%;padding:8px 10px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14px;" placeholder="e.g. flyers, materials"></div>
+          <button onClick="{{ onAddExpense }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:10px 18px;cursor:pointer;">Add</button>
+        </div>
+        <div style="padding:22px 0;">
+          <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:6px;">Total logged</div>
+          <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:32px;">{{ totalExpensesLabel }}</div>
+        </div>
+      </div>
+      <sc-if value="{{ hasExpensesList }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ expensesList }}" as="x" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(32,30,29,0.25);">
+            <div>
+              <span style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.6);">{{ x.dateLabel }}{{ x.noteSuffix }}</span>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;">
+              <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;">{{ x.amountLabel }}</span>
+              <button onClick="{{ x.onRemove }}" style="background:none;border:none;cursor:pointer;color:rgba(32,30,29,0.4);">✕</button>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+    </sc-if>
+
+    <div style="display:flex;gap:16px;align-items:center;margin-top:32px;">
+      <button onClick="{{ onDownloadLedgerLog }}" style="font-family:'Archivo',monospace;font-size:11px;background:none;border:1px solid rgba(32,30,29,0.4);color:#201e1d;padding:6px 12px;cursor:pointer;">Export log ↓</button>
+      <button onClick="{{ onLedgerPush }}" style="font-family:'Archivo',monospace;font-size:11px;background:#ec3013;border:1px solid #ec3013;color:#f3f2f2;padding:6px 12px;cursor:pointer;">{{ ledgerPushLabel }}</button>
+      <button onClick="{{ onResetAll }}" style="font-family:'Archivo',monospace;font-size:11px;color:rgba(32,30,29,0.4);background:none;border:none;cursor:pointer;text-decoration:underline;">Clear all saved data</button>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ isGuide }}" hint-placeholder-val="{{ false }}">
+  <section>
+    <header style="margin-bottom:32px;">
+      <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ae1800;margin-bottom:10px;">Field guide · prompt system</div>
+      <h1 style="font-size:clamp(26px,3.6vw,36px);margin:0 0 8px;">A prompt for every stage of the season</h1>
+      <p style="font-size:14px;color:rgba(32,30,29,0.65);max-width:60ch;margin:0;">Pick the stage you're standing in, fill in the specifics, and copy the finished prompt into your next conversation with Claude.</p>
+    </header>
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:36px;align-items:start;">
+      <nav>
+        <sc-for list="{{ guideNav }}" as="g" hint-placeholder-count="6">
+          <button onClick="{{ g.onClick }}" style="display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:12px 0;border-bottom:1px dashed rgba(32,30,29,0.2);">
+            <span style="display:block;font-family:'Archivo',monospace;font-size:10.5px;color:rgba(32,30,29,0.6);margin-bottom:2px;">{{ g.num }} — {{ g.sub }}</span>
+            <span style="font-size:14.5px;color:{{ g.color }};font-weight:{{ g.weight }};">{{ g.label }}</span>
+          </button>
+        </sc-for>
+      </nav>
+      <div style="background:#eae9e9;padding:28px;">
+        <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin-bottom:8px;">Stage {{ stageNum }}</div>
+        <h2 style="font-size:24px;margin:0 0 8px;">{{ stageLabel }}</h2>
+        <p style="font-size:14px;color:rgba(32,30,29,0.68);margin:0 0 24px;max-width:60ch;border-left:2px solid #d7d3d3;padding-left:14px;">{{ stageDesc }}</p>
+        <div>
+          <sc-for list="{{ fields }}" as="field" hint-placeholder-count="3">
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-family:'Archivo',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(32,30,29,0.6);margin-bottom:6px;">{{ field.label }}</label>
+              <sc-if value="{{ field.isSelect }}" hint-placeholder-val="{{ false }}">
+                <select id="f-{{ field.id }}" style="width:100%;padding:9px 11px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14.5px;">
+                  <sc-for list="{{ field.options }}" as="opt" hint-placeholder-count="4"><option value="{{ opt }}">{{ opt }}</option></sc-for>
+                </select>
+              </sc-if>
+              <sc-if value="{{ field.isTextarea }}" hint-placeholder-val="{{ false }}">
+                <textarea id="f-{{ field.id }}" defaultValue="{{ field.defaultValue }}" placeholder="{{ field.placeholder }}" style="width:100%;min-height:70px;padding:9px 11px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14.5px;resize:vertical;"></textarea>
+              </sc-if>
+              <sc-if value="{{ field.isText }}" hint-placeholder-val="{{ true }}">
+                <input id="f-{{ field.id }}" type="text" defaultValue="{{ field.defaultValue }}" placeholder="{{ field.placeholder }}" style="width:100%;padding:9px 11px;border:1px solid rgba(32,30,29,0.4);background:#f3f2f2;font-size:14.5px;">
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ onGenerate }}" style="background:#ec3013;color:#f3f2f2;font-weight:800;font-size:13px;border:none;padding:12px 22px;cursor:pointer;margin-bottom:24px;">Generate prompt</button>
+        <div style="border-top:1px dashed #d7d3d3;padding-top:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(32,30,29,0.6);">Ready to paste</span>
+            <div style="display:flex;gap:8px;">
+              <button onClick="{{ onDownload }}" style="font-family:'Archivo',monospace;font-size:11px;background:none;border:1px solid rgba(32,30,29,0.4);color:#201e1d;padding:6px 12px;cursor:pointer;">Download .txt</button>
+              <button onClick="{{ onCopy }}" style="font-family:'Archivo',monospace;font-size:11px;background:none;border:1px solid #ec3013;color:#ae1800;padding:6px 12px;cursor:pointer;">{{ copyLabel }}</button>
+            </div>
+          </div>
+          <sc-if value="{{ hasPrompt }}" hint-placeholder-val="{{ false }}">
+            <pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Archivo',monospace;font-size:13px;line-height:1.65;background:#f3f2f2;border:1px solid rgba(32,30,29,0.3);padding:16px 18px;margin:0;">{{ promptText }}</pre>
+          </sc-if>
+          <sc-if value="{{ hasPrompt }}" hint-placeholder-val="{{ true }}">
+            <pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Archivo',monospace;font-size:13px;line-height:1.65;background:#f3f2f2;border:1px solid rgba(32,30,29,0.3);padding:16px 18px;margin:0;color:rgba(32,30,29,0.45);font-style:italic;">Fill in the fields above and generate a prompt.</pre>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ isCompass }}" hint-placeholder-val="{{ false }}">
+  <section>
+    <header style="margin-bottom:28px;">
+      <div style="font-family:'Archivo',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#ae1800;margin-bottom:10px;">The entrepreneur's compass</div>
+      <h1 style="font-size:clamp(26px,3.6vw,36px);margin:0 0 8px;">Strategy, distilled</h1>
+      <p style="font-size:14px;color:rgba(32,30,29,0.65);max-width:60ch;">The full plan behind the daily push above — vision, model, offer, and the next moves.</p>
+    </header>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">Vision</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0 0 22px;max-width:70ch;">Build a healing community focused on natural healing, spinal therapies, gardening, and mindfulness — starting in Croatia. 6-12 months: transition into paid health coaching. 3-5 years: a full enterprise spanning food, coaching, and a connected resource network.</p>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">The model</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0 0 10px;"><strong>Start:</strong> Personalized Health Coaching — fastest to a first client, needs only a room. <strong>Grow into:</strong> the Healing Community Hub — workshops, membership, digital resources. <strong>Later upsell:</strong> Natural Healing Retreats, once there's a client base to fill one.</p>
+    <p style="font-size:13px;color:rgba(32,30,29,0.6);margin:0 0 22px;">Other reference ideas kept on file: AI wellness resources, community gardening, healing content/YouTube, meditation apps, spinal-therapy workshops, a membership platform, healing kits, self-defense classes, a certification track.</p>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">Ideal client</h3>
+    <p style="font-size:14px;line-height:1.6;margin:0 0 22px;max-width:70ch;">Ana or Marko, 30-45, burned out by a high-stress job, already circling yoga studios, farmers' markets, and wellness groups. Wants calm, mobility, and clarity — worried about cost, time, and being judged.</p>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">Positioning & offer</h3>
+    <p style="font-family:'Archivo',sans-serif;font-weight:800;font-size:19px;color:#ae1800;margin:0 0 10px;">"Natural Healing, Tailored to Your Body, Mind, and Heart."</p>
+    <div style="display:flex;flex-direction:column;gap:0;margin-bottom:22px;">
+      <div style="padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);"><strong>Session 1 — Discovery:</strong> assessment, foundational mindfulness, simple spinal stretches → a tailored wellness plan.</div>
+      <div style="padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);"><strong>Session 2 — Restoration:</strong> gardening/movement, spinal alignment → a Daily Healing Checklist.</div>
+      <div style="padding:10px 0;"><strong>Session 3 — Realignment:</strong> emotional release, progress review → a 30-Day Healing Roadmap.</div>
+    </div>
+    <p style="font-size:13.5px;margin:0 0 22px;">€150 for the 3-session package, 60-90 min, in-person or virtual · upsells: monthly membership, 1:1 coaching, topic workshops.</p>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">BATON plan</h3>
+    <div style="display:flex;flex-direction:column;gap:0;margin-bottom:22px;">
+      <div style="padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);"><strong>Audience:</strong> free local workshops, simple Instagram + short videos.</div>
+      <div style="padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);"><strong>Tribe:</strong> an email list built on a free "5 Steps" download.</div>
+      <div style="padding:10px 0;border-bottom:1px dashed rgba(32,30,29,0.2);"><strong>Offer:</strong> the Holistic Reset package, priced to attract the first tribe.</div>
+      <div style="padding:10px 0;"><strong>Network:</strong> cross-promote with yoga/massage/chiropractic practitioners.</div>
+    </div>
+
+    <h3 style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#ec3013;margin:0 0 12px;">First 90 days</h3>
+    <p style="font-size:14px;line-height:1.6;max-width:70ch;"><strong>Weeks 1-4:</strong> 2-3 free workshops, 50-100 flyers, awareness only. <strong>Weeks 5-8:</strong> open paid coaching at an intro rate, run one small paid class. <strong>Weeks 9-12:</strong> collect testimonials, refine pricing, start saving toward a website and email list.</p>
+  </section>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const pad = n => String(n).padStart(2,'0');
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function fmtDate(ds){ const d=new Date(ds+'T00:00:00'); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function navStyle(active){ return active ? "color:#ec3013;border-bottom:2px solid #ec3013" : "color:#201e1d;border-bottom:2px solid transparent"; }
+
+const _mem = {};
+const store = {
+  async get(k){
+    if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.get(k); }catch(e){ return null; } }
+    try{ if(typeof localStorage!=="undefined"){ const v=localStorage.getItem(k); return v!==null?{value:v}:null; } }catch(e){}
+    return (k in _mem)?{value:_mem[k]}:null;
+  },
+  async set(k,v){
+    if(typeof window!=="undefined" && window.storage){ try{ return await window.storage.set(k,v); }catch(e){ throw e; } }
+    try{ if(typeof localStorage!=="undefined"){ localStorage.setItem(k,v); return {value:v}; } }catch(e){}
+    _mem[k]=v; return {value:v};
+  }
+};
+
+const STAGES = [
+  { key:"content", num:"01", label:"First Sprout", sub:"A piece of content", ledger:"First Sprout — Content",
+    desc:"Turn something you already know into a handout, post, or short article people can actually use.",
+    fields:[
+      {id:"type", label:"Format", type:"select", options:["A printed handout","A social media post","A short blog article","A workshop outline"]},
+      {id:"topic", label:"Topic", type:"text", placeholder:"e.g. 5 stretches for spinal health"},
+      {id:"audience", label:"Who it's for", type:"text", value:"stressed professionals in Croatia interested in natural healing"},
+      {id:"details", label:"What you actually tell clients (rough notes are fine)", type:"textarea", placeholder:"List the real stretches, tips, or steps you walk clients through..."}
+    ],
+    template: f => `I'm Robert, building a natural healing community in Croatia focused on spinal therapy, gardening, and mindfulness.
+
+Write ${f.type||"[format]"} on the topic of "${f.topic||"[topic]"}" for ${f.audience||"[audience]"}.
+
+Here's what I actually tell clients — build the content from this, don't invent generic advice:
+${f.details||"[your notes here]"}
+
+Keep the voice warm and plain-spoken, no medical jargon, and make it something I could hand out or post today.` },
+  { key:"website", num:"02", label:"Taking Root", sub:"A page people can find", ledger:"Taking Root — Website",
+    desc:"Write the copy for one section of a simple one-page site, so you have somewhere to send people.",
+    fields:[
+      {id:"section", label:"Which section", type:"select", options:["Hero / homepage intro","About me","Services & offers","Contact / booking"]},
+      {id:"offer", label:"The offer this section should point to", type:"text", placeholder:"e.g. a 3-session introductory package"},
+      {id:"tone", label:"Tone", type:"text", value:"warm, direct, personal — like a guide, not a salesperson"}
+    ],
+    template: f => `I'm building a simple one-page website for my natural healing business in Croatia (spinal therapy, gardening, mindfulness).
+
+Write the copy for the "${f.section||"[section]"}" section.
+
+It should point toward this offer: ${f.offer||"[offer]"}
+
+Tone: ${f.tone||"[tone]"}
+
+Keep it short enough to read in one screen. No filler, no generic wellness-brand language — write it like I'd actually say it to someone.` },
+  { key:"audio", num:"03", label:"Full Bloom", sub:"A guided audio product", ledger:"Full Bloom — Audio",
+    desc:"Script a piece of guided audio — the natural next step from the audiobooks-with-music habit you already have.",
+    fields:[
+      {id:"practice", label:"Type of practice", type:"select", options:["A guided spinal stretch session","A mindfulness meditation","A gardening reflection / grounding practice"]},
+      {id:"length", label:"Length (minutes)", type:"text", value:"10"},
+      {id:"focus", label:"What it should help with", type:"text", placeholder:"e.g. releasing tension after a desk job day"}
+    ],
+    template: f => `Write a script for ${f.practice||"[practice type]"}, about ${f.length||"[length]"} minutes long when read at a slow, calm pace.
+
+It should help with: ${f.focus||"[focus]"}
+
+This is for a guided audio product for my natural healing business (spinal therapy, gardening, mindfulness, based in Croatia). Write it to be read aloud — natural pacing, pauses marked, gentle and grounded, not overly scripted or corporate-wellness sounding.` },
+  { key:"marketing", num:"04", label:"Harvest & Share", sub:"Reaching people", ledger:"Harvest & Share — Marketing",
+    desc:"Draft the message that gets your first workshop, session, or newsletter subscriber.",
+    fields:[
+      {id:"channel", label:"Channel", type:"select", options:["A printed flyer","A WhatsApp message to my contacts","A short email","A social media caption"]},
+      {id:"goal", label:"What you want people to do", type:"text", placeholder:"e.g. come to a free workshop on Saturday"},
+      {id:"detail", label:"Any specifics (date, place, price)", type:"textarea", placeholder:"e.g. Saturday 10am, community center, free"}
+    ],
+    template: f => `Write ${f.channel||"[channel]"} for my natural healing business in Croatia (spinal therapy, gardening, mindfulness).
+
+Goal: get people to ${f.goal||"[goal]"}
+
+Details to include: ${f.detail||"[details]"}
+
+Keep it short, warm, and specific — speak to someone who's feeling stressed or stuck, not to a wellness industry insider.` },
+  { key:"workshop", num:"05", label:"Tending the Plot", sub:"Planning an event", ledger:"Tending the Plot — Workshops",
+    desc:"Turn a workshop idea into a real run-of-show, so hosting one isn't a mystery.",
+    fields:[
+      {id:"topic", label:"Workshop topic", type:"text", placeholder:"e.g. Gardening for Healing"},
+      {id:"duration", label:"Duration", type:"text", value:"90 minutes"},
+      {id:"size", label:"Expected group size", type:"text", value:"10-15 people"}
+    ],
+    template: f => `Help me plan a ${f.duration||"[duration]"} workshop on "${f.topic||"[topic]"}" for about ${f.size||"[size]"} people, likely at a community center or similar local space in Croatia.
+
+Give me a simple run-of-show (timing included), a list of materials I'd need, and a natural way to collect names/contacts from attendees for a follow-up list — without it feeling like a sales pitch.` },
+  { key:"checkin", num:"06", label:"Reading the Season", sub:"Strategy check-in", ledger:"Reading the Season — Strategy",
+    desc:"Step back, tell me honestly what's working and what's stuck, and get a clear next move.",
+    fields:[
+      {id:"working", label:"What's working right now", type:"textarea", placeholder:"e.g. people respond well when I talk to them in person"},
+      {id:"stuck", label:"What's stuck", type:"textarea", placeholder:"e.g. I still don't have anywhere to send people online"}
+    ],
+    template: f => `Here's where I am with my natural healing business in Croatia right now.
+
+What's working: ${f.working||"[what's working]"}
+
+What's stuck: ${f.stuck||"[what's stuck]"}
+
+Given this, what's the single most useful thing I could focus on this week? Be direct — I'd rather have one clear next step than a long list.` }
+];
+
+const LEDGER_STAGES = STAGES.map(s=>s.ledger);
+const DEFAULT_TASKS = STAGES.map(s=>({ stage:s.ledger, done:false,
+  text:({ content:"Draft one content piece (e.g. spinal health handout)", website:"Write hero + about copy for a one-page site",
+    audio:"Script a 10-minute guided audio piece", marketing:"Send one outreach message to your existing contacts",
+    workshop:"Plan a first free workshop", checkin:"Do a weekly check-in on what's working / stuck" })[s.key] }));
+
+const HABITS = [{key:"stretch",label:"Stretch"},{key:"garden",label:"Garden"},{key:"meditate",label:"Meditate"}];
+const EVENT_TYPES = ["Session","Workshop","Follow-up call","Other"];
+const STATUSES = ["New","Reached out","Booked a session","Client"];
+const WEEKDAY_LABELS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const DAILY_NUGGETS = [
+  {tag:"Model", text:"Personalized Health Coaching is the fastest path to a first euro — it needs only a room and a first client. Let it fund the bigger Healing Community Hub later."},
+  {tag:"Ideal client", text:"Your person is Ana or Marko, 30-45, burned out, already circling yoga studios and farmers' markets — that's where to show up this week."},
+  {tag:"USP", text:"\"Natural Healing, Tailored to Your Body, Mind, and Heart.\" Say it out loud in your next conversation and see if it lands."},
+  {tag:"Offer", text:"The Holistic Reset is 3 sessions, €150, and a 30-Day Roadmap at the end. That's the whole first sale — nothing more complex needed yet."},
+  {tag:"BATON — Audience", text:"One free workshop this month beats a perfect website. Book a room, print flyers, and set a date."},
+  {tag:"BATON — Tribe", text:"Build the list before you build the funnel: collect names and numbers on paper at every workshop."},
+  {tag:"BATON — Network", text:"A yoga instructor or chiropractor's referral is worth more right now than an ad. Ask one for coffee this week."},
+  {tag:"Lead magnet", text:"\"The 15-Minute Reset\" — a free 3-part routine (breathing, stretch, journal) is the easiest thing to hand someone today."},
+  {tag:"90 days", text:"Weeks 1-4 are for awareness only: 2-3 free workshops, 50-100 flyers. Resist selling until week 5."},
+  {tag:"Reference idea", text:"Spinal Therapy Workshops pair naturally with coaching — a local workshop with a follow-up consultation upsell."},
+  {tag:"Objection", text:"\"I don't have time\" is the most common objection. The 15-Minute Reset exists specifically to answer it."},
+  {tag:"Dream outcome", text:"Remember what you're actually selling: not sessions, but a client who feels calm, mobile, and part of a community again."}
+];
+const MOTIVATION = [
+  "You already have the skills — empathy, healing knowledge, the ability to meet anyone where they are. The business just needs a shape.",
+  "Every conversation is a potential opportunity. You don't need a big audience today, you need one honest conversation.",
+  "Small, consistent action beats a perfect plan. One workshop, one flyer, one follow-up call.",
+  "You're not starting from zero — you're organizing years of real experience into something people can find and pay for.",
+  "Service and giving are the values you lead with. A sustainable price on that service isn't a betrayal of it — it's what lets you keep doing it.",
+  "Croatia doesn't need another wellness brand. It needs the person who actually shows up — that's the whole edge.",
+  "Progress this week doesn't have to be visible to anyone but you. Keep tending the plot."
+];
+
+class Component extends DCLogic {
+  state = {
+    view:"home", ledgerTab:"leads", guideStage:0,
+    leads:[], tasks:[], events:[], revenue:[], expenses:[], habitLog:{},
+    ghToken:null, ghBusy:null, ghStatus:{calendar:null, ledger:null},
+    calYear:new Date().getFullYear(), calMonth:new Date().getMonth(),
+    selectedDate:null, promptText:"", copyLabel:"Copy"
+  };
+
+  componentDidMount(){ this.loadAll(); }
+
+  async loadAll(){
+    const [leadsR,tasksR,eventsR,revR,expR,habR,ghR] = await Promise.all([
+      store.get("alm-leads"), store.get("alm-tasks"), store.get("alm-events"), store.get("alm-revenue"), store.get("alm-expenses"), store.get("alm-habits"), store.get("alm-gh-token")
+    ]);
+    let leads=[]; try{ leads = leadsR ? JSON.parse(leadsR.value) : []; }catch(e){}
+    let tasks=null; try{ tasks = tasksR ? JSON.parse(tasksR.value) : null; }catch(e){}
+    if(!tasks){ tasks = DEFAULT_TASKS.map(t=>({...t,id:uid()})); this.saveTasks(tasks); }
+    let events=[]; try{ events = eventsR ? JSON.parse(eventsR.value) : []; }catch(e){}
+    let revenue=[]; try{ revenue = revR ? JSON.parse(revR.value) : []; }catch(e){}
+    let expenses=[]; try{ expenses = expR ? JSON.parse(expR.value) : []; }catch(e){}
+    let habitLog={}; try{ habitLog = habR ? JSON.parse(habR.value) : {}; }catch(e){}
+    const ghToken = ghR ? ghR.value : null;
+    this.setState({leads,tasks,events,revenue,expenses,habitLog,ghToken});
+  }
+  connectGithub(){
+    const token = window.prompt("Paste a GitHub personal access token with 'repo' scope.\nStored only in your browser, never shown elsewhere.");
+    if(!token) return;
+    store.set("alm-gh-token", token).catch(()=>{});
+    this.setState({ghToken:token});
+  }
+  csvEscape(v){ v=String(v??""); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+  toCsv(rows, cols){
+    const esc=this.csvEscape.bind(this);
+    return [cols.map(esc).join(","), ...rows.map(r=>cols.map(c=>esc(r[c])).join(","))].join("\n");
+  }
+  async putFile(repo, token, path, contentStr, message){
+    const api=`https://api.github.com/repos/${repo}/contents/${path}`;
+    let sha;
+    const getRes = await fetch(api, {headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json"}});
+    if(getRes.ok){ sha=(await getRes.json()).sha; }
+    const content = btoa(unescape(encodeURIComponent(contentStr)));
+    const putRes = await fetch(api, { method:"PUT", headers:{Authorization:`token ${token}`, Accept:"application/vnd.github+json", "Content-Type":"application/json"}, body: JSON.stringify({message, content, sha, branch:"main"}) });
+    if(!putRes.ok){ throw new Error((await putRes.json()).message || putRes.statusText); }
+  }
+  async pushToGithub(kind){
+    if(!this.state.ghToken){ this.connectGithub(); return; }
+    const s=this.state, token=this.state.ghToken, repo="ro1-hub/Alamanac";
+    this.setState(prev=>({ghBusy:kind}));
+    try{
+      if(kind==="calendar"){
+        const data={exportedAt:new Date().toISOString(), events:s.events};
+        const csv=this.toCsv(s.events.map(e=>({Date:e.date,Time:e.time,Title:e.title,Type:e.type,Person:e.person,Notes:e.notes})),
+          ["Date","Time","Title","Type","Person","Notes"]);
+        await this.putFile(repo, token, "logs/almanac-calendar-log.json", JSON.stringify(data,null,2), "Update calendar log");
+        await this.putFile(repo, token, "logs/almanac-calendar-log.csv", csv, "Update calendar log (table)");
+      } else {
+        const data={exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses};
+        await this.putFile(repo, token, "logs/almanac-ledger-log.json", JSON.stringify(data,null,2), "Update ledger log");
+        const leadsCsv=this.toCsv(s.leads.map(l=>({Date:l.date,Name:l.name,Source:l.source,Contact:l.contact,Status:l.status,Note:l.note})),
+          ["Date","Name","Source","Contact","Status","Note"]);
+        await this.putFile(repo, token, "logs/almanac-leads-log.csv", leadsCsv, "Update leads log (table)");
+        const tasksCsv=this.toCsv(s.tasks.map(t=>({Stage:t.stage,Task:t.text,Done:t.done?"Yes":"No"})),
+          ["Stage","Task","Done"]);
+        await this.putFile(repo, token, "logs/almanac-tasks-log.csv", tasksCsv, "Update tasks log (table)");
+        const revenueCsv=this.toCsv(s.revenue.map(r=>({Date:r.date,Client:r.client,Amount:r.amount,Note:r.note})),
+          ["Date","Client","Amount","Note"]);
+        await this.putFile(repo, token, "logs/almanac-revenue-log.csv", revenueCsv, "Update revenue log (table)");
+        const expensesCsv=this.toCsv(s.expenses.map(x=>({Date:x.date,Amount:x.amount,Note:x.note})),
+          ["Date","Amount","Note"]);
+        await this.putFile(repo, token, "logs/almanac-expenses-log.csv", expensesCsv, "Update expenses log (table)");
+      }
+      this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:true, at:Date.now()}}}));
+    }catch(e){
+      this.setState(prev=>({ghBusy:null, ghStatus:{...prev.ghStatus, [kind]:{ok:false, at:Date.now(), error:String(e.message||e)}}}));
+    }
+  }
+  saveLeads(leads){ store.set("alm-leads", JSON.stringify(leads)).catch(()=>{}); }
+  saveTasks(tasks){ store.set("alm-tasks", JSON.stringify(tasks)).catch(()=>{}); }
+  saveEvents(events){ store.set("alm-events", JSON.stringify(events)).catch(()=>{}); }
+  saveRevenue(revenue){ store.set("alm-revenue", JSON.stringify(revenue)).catch(()=>{}); }
+  saveExpenses(expenses){ store.set("alm-expenses", JSON.stringify(expenses)).catch(()=>{}); }
+  saveHabits(habitLog){ store.set("alm-habits", JSON.stringify(habitLog)).catch(()=>{}); }
+
+  setView(v){ this.setState({view:v}); }
+  setLedgerTab(t){ this.setState({ledgerTab:t}); }
+  setGuideStage(i){ this.setState({guideStage:i, promptText:""}); }
+
+  toggleHabit(key){
+    const d = todayStr();
+    const log = {...this.state.habitLog};
+    const day = {...(log[d]||{})};
+    day[key] = !day[key];
+    log[d] = day;
+    this.setState({habitLog:log}); this.saveHabits(log);
+  }
+  habitStreak(key){
+    let n=0; let d=new Date();
+    while(true){
+      const ds = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      const day = this.state.habitLog[ds];
+      if(day && day[key]){ n++; d.setDate(d.getDate()-1); } else break;
+    }
+    return n;
+  }
+
+  addLead(){
+    const name=document.getElementById("l-name").value.trim(); if(!name) return;
+    const lead={ id:uid(), name, source:document.getElementById("l-source").value.trim(),
+      contact:document.getElementById("l-contact").value.trim(), note:document.getElementById("l-note").value.trim(),
+      status:STATUSES[0], date:todayStr() };
+    const leads=[lead,...this.state.leads]; this.setState({leads}); this.saveLeads(leads);
+    ["l-name","l-source","l-contact","l-note"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  }
+  setLeadStatus(id,status){ const leads=this.state.leads.map(l=>l.id===id?{...l,status}:l); this.setState({leads}); this.saveLeads(leads); }
+  removeLead(id){ const leads=this.state.leads.filter(l=>l.id!==id); this.setState({leads}); this.saveLeads(leads); }
+
+  addTask(){
+    const text=document.getElementById("t-text").value.trim(); if(!text) return;
+    const stage=document.getElementById("t-stage").value;
+    const tasks=[...this.state.tasks, {id:uid(), stage, text, done:false}];
+    this.setState({tasks}); this.saveTasks(tasks);
+    document.getElementById("t-text").value="";
+  }
+  toggleTask(id){ const tasks=this.state.tasks.map(t=>t.id===id?{...t,done:!t.done}:t); this.setState({tasks}); this.saveTasks(tasks); }
+  removeTask(id){ const tasks=this.state.tasks.filter(t=>t.id!==id); this.setState({tasks}); this.saveTasks(tasks); }
+
+  addEvent(){
+    const title=document.getElementById("e-title").value.trim(); if(!title) return;
+    const ev={ id:uid(), title, type:document.getElementById("e-type").value,
+      date:document.getElementById("e-date").value || todayStr(), time:document.getElementById("e-time").value,
+      person:document.getElementById("e-person").value.trim(), notes:document.getElementById("e-notes").value.trim() };
+    const events=[...this.state.events, ev].sort((a,b)=>a.date.localeCompare(b.date));
+    this.setState({events}); this.saveEvents(events);
+    ["e-title","e-time","e-person","e-notes"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  }
+  removeEvent(id){ const events=this.state.events.filter(e=>e.id!==id); this.setState({events}); this.saveEvents(events); }
+  prevMonth(){ let {calYear,calMonth}=this.state; calMonth--; if(calMonth<0){calMonth=11;calYear--;} this.setState({calYear,calMonth}); }
+  nextMonth(){ let {calYear,calMonth}=this.state; calMonth++; if(calMonth>11){calMonth=0;calYear++;} this.setState({calYear,calMonth}); }
+  selectDay(ds){ this.setState({selectedDate: this.state.selectedDate===ds ? null : ds}); }
+
+  addRevenue(){
+    const amount=parseFloat(document.getElementById("r-amount").value); if(!amount) return;
+    const rev={ id:uid(), client:document.getElementById("r-client").value.trim()||"—",
+      amount, date:document.getElementById("r-date").value||todayStr(), note:document.getElementById("r-note").value.trim() };
+    const revenue=[rev,...this.state.revenue]; this.setState({revenue}); this.saveRevenue(revenue);
+    ["r-client","r-amount","r-note"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  }
+  removeRevenue(id){ const revenue=this.state.revenue.filter(r=>r.id!==id); this.setState({revenue}); this.saveRevenue(revenue); }
+
+  addExpense(){
+    const amount=parseFloat(document.getElementById("x-amount").value); if(!amount) return;
+    const exp={ id:uid(), amount, date:document.getElementById("x-date").value||todayStr(),
+      note:document.getElementById("x-note").value.trim() };
+    const expenses=[...this.state.expenses, exp]; this.setState({expenses}); this.saveExpenses(expenses);
+    ["x-amount","x-note"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  }
+  removeExpense(id){ const expenses=this.state.expenses.filter(x=>x.id!==id); this.setState({expenses}); this.saveExpenses(expenses); }
+
+  generatePrompt(){
+    const stage=STAGES[this.state.guideStage];
+    const values={};
+    stage.fields.forEach(f=>{ const el=document.getElementById("f-"+f.id); values[f.id]= el ? el.value : ""; });
+    this.setState({promptText: stage.template(values)});
+  }
+  copyPrompt(){
+    if(!this.state.promptText) return;
+    navigator.clipboard.writeText(this.state.promptText).then(()=>{
+      this.setState({copyLabel:"Copied"}); setTimeout(()=>this.setState({copyLabel:"Copy"}),1400);
+    }).catch(()=>{});
+  }
+  downloadLog(kind){
+    const s=this.state;
+    let data, filename;
+    if(kind==="calendar"){ data={ exportedAt:new Date().toISOString(), events:s.events }; filename="almanac-calendar-log.json"; }
+    else { data={ exportedAt:new Date().toISOString(), leads:s.leads, tasks:s.tasks, revenue:s.revenue, expenses:s.expenses }; filename="almanac-ledger-log.json"; }
+    const blob=new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+  downloadPrompt(){
+    if(!this.state.promptText) return;
+    const blob=new Blob([this.state.promptText], {type:"text/plain"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="almanac-prompt.txt"; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  resetAll(){
+    if(!window.confirm("This clears everyone logged, all tasks, events and revenue. Continue?")) return;
+    const tasks=DEFAULT_TASKS.map(t=>({...t,id:uid()}));
+    this.setState({leads:[],tasks,events:[],revenue:[],habitLog:{}});
+    this.saveLeads([]); this.saveTasks(tasks); this.saveEvents([]); this.saveRevenue([]); this.saveHabits({});
+  }
+
+  renderVals(){
+    const s=this.state;
+    const view=s.view;
+    const today=todayStr();
+    const hour=new Date().getHours();
+    const greet = hour<12?"Good morning":hour<18?"Good afternoon":"Good evening";
+    const todayLabel = new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+
+    const habitRows = HABITS.map(h=>{
+      const day = s.habitLog[today]||{};
+      const checked = !!day[h.key];
+      return { key:h.key, label:h.label, checked: checked ? "#201e1d" : "transparent", streak: this.habitStreak(h.key), onToggle:()=>this.toggleHabit(h.key) };
+    });
+
+    const stageProgress = st => { const items=s.tasks.filter(t=>t.stage===st.ledger); const done=items.filter(t=>t.done).length; return {done,total:items.length}; };
+    let curIdx = STAGES.length-1;
+    for(let i=0;i<STAGES.length;i++){ const p=stageProgress(STAGES[i]); if(p.total>0 && p.done<p.total){ curIdx=i; break; } }
+    const totalTasks=s.tasks.length; const doneTasks=s.tasks.filter(t=>t.done).length;
+    const pct = totalTasks ? Math.round(doneTasks/totalTasks*100) : 0;
+    const R=26, C=2*Math.PI*R;
+    const ringOffset=(C*(1-pct/100)).toFixed(1);
+
+    const stageNodes = STAGES.map((st,i)=>{
+      const p=stageProgress(st); const full=p.total>0 && p.done===p.total; const isCur=i===curIdx;
+      const barPct = p.total>0 ? Math.round(p.done/p.total*100) : 0;
+      return { key:st.key, num:st.num, label:st.label, sub:st.sub, count: p.total>0 ? `${p.done}/${p.total}` : "—",
+        barPct, labelColor: isCur ? "#ec3013" : (full ? "#201e1d" : "#201e1d"), labelWeight: isCur ? 800 : 600,
+        here:isCur, onClick:()=>this.setState({guideStage:i, view:"guide"}) };
+    });
+
+    let nextTaskObj=null;
+    for(const st of STAGES){ const t=s.tasks.find(x=>x.stage===st.ledger && !x.done); if(t){ nextTaskObj={task:t,stage:st}; break; } }
+
+    const followUps = s.leads.filter(l=>l.status==="New"||l.status==="Reached out").length;
+
+    const upcomingSoon = s.events.filter(e=>e.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,4);
+    const weekItems = upcomingSoon.map(e=>({ label:e.title, sub:`${fmtDate(e.date)}${e.time?" · "+e.time:""} · ${e.type}` }));
+
+    const y=s.calYear, m=s.calMonth;
+    const first=new Date(y,m,1);
+    const startOffset=(first.getDay()+6)%7;
+    const daysInMonth=new Date(y,m+1,0).getDate();
+    const cells=[];
+    for(let i=0;i<startOffset;i++) cells.push({dayNum:"", bg:"transparent", color:"#201e1d", hasEvents:false, dotCount:0, onClick:()=>{}});
+    for(let d=1;d<=daysInMonth;d++){
+      const ds=`${y}-${pad(m+1)}-${pad(d)}`;
+      const dot=s.events.filter(e=>e.date===ds).length;
+      const isToday=ds===today, isSelected=ds===s.selectedDate;
+      cells.push({ dayNum:String(d), bg: isSelected?"#fff2ef":(isToday?"#eae7e7":"transparent"), color:"#201e1d",
+        hasEvents: dot>0, dotCount:dot, onClick:()=>this.selectDay(ds) });
+    }
+    while(cells.length<42) cells.push({dayNum:"", bg:"transparent", color:"#201e1d", hasEvents:false, dotCount:0, onClick:()=>{}});
+    const calLabel = first.toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+
+    const upcomingEvents = s.events.filter(e=>e.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5)
+      .map(e=>({ id:e.id, title:e.title, dateLabel: fmtDate(e.date)+(e.time?" · "+e.time:""), type:e.type, onDelete:()=>this.removeEvent(e.id) }));
+    const selectedDayEvents = s.selectedDate ? s.events.filter(e=>e.date===s.selectedDate).map(e=>({
+      id:e.id, title:e.title, time:e.time||"—", type:e.type, person:e.person||"—", onDelete:()=>this.removeEvent(e.id) })) : [];
+
+    const leadsList = s.leads.map(l=>({ id:l.id, name:l.name, meta:`${l.source||"—"} · ${fmtDate(l.date)}${l.contact?" · "+l.contact:""}`,
+      note:l.note, status:l.status, onRemove:()=>this.removeLead(l.id), onStatusChange:(ev)=>this.setLeadStatus(l.id, ev.target.value) }));
+
+    const taskGroups = LEDGER_STAGES.map(stage=>({
+      stage, items: s.tasks.filter(t=>t.stage===stage).map(t=>({ id:t.id, text:t.text, done:t.done,
+        strike: t.done ? "line-through" : "none", textColor: t.done ? "rgba(32,30,29,0.4)" : "#201e1d",
+        onToggle:()=>this.toggleTask(t.id), onRemove:()=>this.removeTask(t.id) })) })).filter(g=>g.items.length>0);
+
+    const revenueList = s.revenue.map(r=>({ id:r.id, client:r.client, amountLabel:"€"+r.amount.toFixed(2), dateLabel:fmtDate(r.date),
+      noteSuffix: r.note ? " · "+r.note : "", onRemove:()=>this.removeRevenue(r.id) }));
+    const totalRevenue = s.revenue.reduce((a,r)=>a+r.amount,0);
+    const expensesList = s.expenses.map(x=>({ id:x.id, amountLabel:"€"+x.amount.toFixed(2), dateLabel:fmtDate(x.date),
+      noteSuffix: x.note ? " · "+x.note : "", onRemove:()=>this.removeExpense(x.id) }));
+    const totalExpenses = s.expenses.reduce((a,x)=>a+x.amount,0);
+    const now=new Date();
+    const months=[];
+    for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(), now.getMonth()-i, 1); months.push({y:d.getFullYear(), m:d.getMonth(), label:d.toLocaleDateString("en-GB",{month:"short"})}); }
+    const monthTotals = months.map(mo=>({ label:mo.label, total: s.revenue.filter(r=>{ const rd=new Date(r.date+"T00:00:00"); return rd.getFullYear()===mo.y && rd.getMonth()===mo.m; }).reduce((a,r)=>a+r.amount,0) }));
+    const maxTotal = Math.max(1, ...monthTotals.map(x=>x.total));
+    const monthlyBars = monthTotals.map(x=>({ label:x.label, amountLabel:"€"+x.total.toFixed(0), pct: Math.round(x.total/maxTotal*100) }));
+
+    const stage = STAGES[s.guideStage];
+    const guideNav = STAGES.map((st,i)=>({ num:st.num, sub:st.sub, label:st.label,
+      color: i===s.guideStage ? "#ec3013" : "#201e1d", weight: i===s.guideStage ? 800 : 600, onClick:()=>this.setGuideStage(i) }));
+    const fields = stage.fields.map(f=>({ id:f.id, label:f.label, isSelect:f.type==="select", isTextarea:f.type==="textarea",
+      isText:f.type==="text", options: f.options||[], placeholder:f.placeholder||"", defaultValue:f.value||"" }));
+
+    const dayIndex = Math.floor(Date.now()/86400000);
+    const todaysNugget = DAILY_NUGGETS[dayIndex % DAILY_NUGGETS.length];
+    const todaysMotivation = MOTIVATION[(dayIndex+3) % MOTIVATION.length];
+
+    return {
+      view, isHome:view==="home", isCalendar:view==="calendar", isLedger:view==="ledger", isGuide:view==="guide", isCompass:view==="compass",
+      navHomeStyle:navStyle(view==="home"), navCalStyle:navStyle(view==="calendar"), navLedgerStyle:navStyle(view==="ledger"), navGuideStyle:navStyle(view==="guide"), navCompassStyle:navStyle(view==="compass"),
+      goHome:()=>this.setView("home"), goCal:()=>this.setView("calendar"), goLedger:()=>this.setView("ledger"), goGuide:()=>this.setView("guide"), goCompass:()=>this.setView("compass"),
+      todaysNugget, todaysMotivation,
+
+      greet, todayLabel, habitRows,
+      pct, ringOffset, ringC:C.toFixed(1), doneTasks, totalTasks, stageNodes,
+      nextTaskHeadline: nextTaskObj ? nextTaskObj.task.text : "Every task is done — nice work.",
+      nextTaskStage: nextTaskObj ? `${nextTaskObj.stage.num} · ${nextTaskObj.stage.label}` : "",
+      hasNextTask: !!nextTaskObj, weekItems, followUps,
+
+      weekdayLabels: WEEKDAY_LABELS, calLabel, calCells:cells, onPrevMonth:()=>this.prevMonth(), onNextMonth:()=>this.nextMonth(),
+      upcomingEvents, hasUpcoming: upcomingEvents.length>0,
+      hasSelectedDay: !!s.selectedDate, selectedDateLabel: s.selectedDate ? fmtDate(s.selectedDate) : "",
+      selectedDayEvents, onClearSelectedDay:()=>this.setState({selectedDate:null}),
+      onAddEvent:()=>this.addEvent(), eventTypes:EVENT_TYPES, todayForInput:today,
+
+      ledgerTab:s.ledgerTab, isLeadsTab:s.ledgerTab==="leads", isTasksTab:s.ledgerTab==="tasks", isRevenueTab:s.ledgerTab==="revenue", isExpensesTab:s.ledgerTab==="expenses",
+      onTabLeads:()=>this.setLedgerTab("leads"), onTabTasks:()=>this.setLedgerTab("tasks"), onTabRevenue:()=>this.setLedgerTab("revenue"), onTabExpenses:()=>this.setLedgerTab("expenses"),
+      tabLeadsColor: s.ledgerTab==="leads"?"#ec3013":"#201e1d", tabLeadsBorder: s.ledgerTab==="leads"?"#ec3013":"transparent",
+      tabTasksColor: s.ledgerTab==="tasks"?"#ec3013":"#201e1d", tabTasksBorder: s.ledgerTab==="tasks"?"#ec3013":"transparent",
+      tabRevenueColor: s.ledgerTab==="revenue"?"#ec3013":"#201e1d", tabRevenueBorder: s.ledgerTab==="revenue"?"#ec3013":"transparent",
+      tabExpensesColor: s.ledgerTab==="expenses"?"#ec3013":"#201e1d", tabExpensesBorder: s.ledgerTab==="expenses"?"#ec3013":"transparent",
+      leadsList, hasLeadsList: leadsList.length>0, statuses:STATUSES, onAddLead:()=>this.addLead(),
+      taskGroups, hasTaskGroups: taskGroups.length>0, ledgerStages:LEDGER_STAGES, onAddTask:()=>this.addTask(),
+      revenueList, hasRevenueList: revenueList.length>0, onAddRevenue:()=>this.addRevenue(),
+      totalRevenueLabel: "€"+totalRevenue.toFixed(2), monthlyBars, onResetAll:()=>this.resetAll(),
+      expensesList, hasExpensesList: expensesList.length>0, onAddExpense:()=>this.addExpense(),
+      totalExpensesLabel: "€"+totalExpenses.toFixed(2),
+      onDownloadCalendarLog:()=>this.downloadLog("calendar"), onDownloadLedgerLog:()=>this.downloadLog("ledger"),
+      ghConnected: !!s.ghToken, onConnectGithub:()=>this.connectGithub(),
+      onPushCalendarLog:()=>this.pushToGithub("calendar"), onPushLedgerLog:()=>this.pushToGithub("ledger"),
+      calPushBusy: s.ghBusy==="calendar", ledgerPushBusy: s.ghBusy==="ledger",
+      calPushLabel: s.ghBusy==="calendar" ? "Pushing…" : (s.ghStatus.calendar ? (s.ghStatus.calendar.ok?"Pushed ✓":"Failed") : (s.ghToken?"Push to GitHub":"Connect GitHub")),
+      ledgerPushLabel: s.ghBusy==="ledger" ? "Pushing…" : (s.ghStatus.ledger ? (s.ghStatus.ledger.ok?"Pushed ✓":"Failed") : (s.ghToken?"Push to GitHub":"Connect GitHub")),
+      onCalPush:()=> s.ghToken ? this.pushToGithub("calendar") : this.connectGithub(),
+      onLedgerPush:()=> s.ghToken ? this.pushToGithub("ledger") : this.connectGithub(),
+
+      guideNav, stageNum:stage.num, stageLabel:stage.label, stageDesc:stage.desc, fields,
+      onGenerate:()=>this.generatePrompt(), promptText:s.promptText, hasPrompt: !!s.promptText,
+      onCopy:()=>this.copyPrompt(), copyLabel:s.copyLabel, onDownload:()=>this.downloadPrompt()
+    };
+  }
+}
+
+</script>
+</body>
+</html>
