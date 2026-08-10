@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T14:34:52.996Z",
+  "exportedAt": "2026-08-10T14:36:07.796Z",
   "leads": [],
   "tasks": [
     {
@@ -40,6 +40,13 @@
     }
   ],
   "revenue": [
+    {
+      "id": "msnc3pg8doorf",
+      "client": "Ratarska 38 i 40",
+      "amount": 300,
+      "date": "2026-08-10",
+      "note": "košnja , gnojidba ,odvoz"
+    },
     {
       "id": "msnbr7spxci96",
       "client": "Remetski Kamenjak",
