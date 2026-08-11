@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-11T12:51:46.010Z",
+  "exportedAt": "2026-08-11T12:52:07.562Z",
   "leads": [],
   "tasks": [
     {
@@ -81,6 +81,13 @@
       "amount": 60,
       "date": "2026-08-09",
       "note": "Sergio"
+    },
+    {
+      "id": "msonts6m3dhkp",
+      "amount": 40,
+      "date": "2026-08-11",
+      "category": "Materials",
+      "note": "Damir"
     }
   ]
 }
