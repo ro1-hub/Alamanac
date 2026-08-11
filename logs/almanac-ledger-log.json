@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T15:13:25.351Z",
+  "exportedAt": "2026-08-11T12:51:46.010Z",
   "leads": [],
   "tasks": [
     {
@@ -40,6 +40,13 @@
     }
   ],
   "revenue": [
+    {
+      "id": "msontc4sczwnm",
+      "client": "Denis",
+      "amount": 100,
+      "date": "2026-08-11",
+      "note": ""
+    },
     {
       "id": "msnd7y8elvb3d",
       "client": "Denis",
